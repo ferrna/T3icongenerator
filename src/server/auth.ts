@@ -2,10 +2,10 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import {
   getServerSession,
   type DefaultSession,
-  type NextAuthOptions,
+  type AuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -26,8 +26,8 @@ declare module "next-auth" {
   }
 
   // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
+  //   ...other properties
+  //   role: UserRole;
   // }
 }
 
@@ -36,33 +36,46 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-export const authOptions: NextAuthOptions = {
+export const authOptions: AuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findUnique({
+        where: { email: token.email! },
+      });
+      if (!dbUser) {
+        throw new Error("no user with email found");
+      }
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        picture: dbUser.image,
+      };
+    },
+    async session({ token, session }) {
+      if (token) {
+        session.user = {
+          //complains in default
+          id: token.id as string,
+          name: token.name,
+          email: token.email,
+          image: token.picture,
+        };
+      }
+      return session;
+    },
   },
   adapter: PrismaAdapter(db) as Adapter,
+  session: {
+    strategy: "jwt",
+  },
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    GoogleProvider({
+      clientId: env.NEXT_GOOGLE_CLIENT_ID!,
+      clientSecret: env.NEXT_GOOGLE_CLIENT_SECRET!,
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
-};
+} satisfies AuthOptions;
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
