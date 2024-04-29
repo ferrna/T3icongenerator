@@ -4,9 +4,11 @@ import { FormGroup } from "../_components/FormGroup";
 import { useState } from "react";
 import { generateIconAction } from "./actions";
 import { api } from "~/trpc/react";
+import Image from "next/image";
 
 export default function GenerateForm() {
   const [form, setForm] = useState({ prompt: "" });
+  const [imageUrl, setImageUrl] = useState("");
 
   function updateForm(key: string) {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -23,6 +25,8 @@ export default function GenerateForm() {
     onSuccess(data) {
       setForm({ prompt: "" });
       console.log("mutation finished", data);
+      if (!data.imageUrl) return;
+      setImageUrl(data.imageUrl);
     },
   });
   async function handleSubmit(e: React.FormEvent) {
@@ -45,6 +49,15 @@ export default function GenerateForm() {
       >
         {generateIcon.isPending ? "Submitting..." : "Submit"}
       </button>
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          alt="generatad-icon-image"
+          className="mx-auto mt-4"
+          width={200}
+          height={200}
+        />
+      )}
     </form>
   );
 }
