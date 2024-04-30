@@ -50,14 +50,22 @@ export default function GenerateForm() {
         {generateIcon.isPending ? "Submitting..." : "Submit"}
       </button>
       {imageUrl && (
-        <Image
-          src={imageUrl}
+        <img
+          src={`data:image/png;base64,${imageUrl}`}
           alt="generatad-icon-image"
           className="mx-auto mt-4"
           width={200}
           height={200}
         />
+        
       )}
     </form>
   );
 }
+{/* <Image
+          src={imageUrl}
+          alt="generatad-icon-image"
+          className="mx-auto mt-4"
+          width={200}
+          height={200}
+        /> */}
