@@ -2,23 +2,16 @@
 import { Input } from "../_components/Input";
 import { FormGroup } from "../_components/FormGroup";
 import { useState } from "react";
-import { generateIconAction } from "./actions";
 import { api } from "~/trpc/react";
-import { SubscriptionType, useBuyCredits } from "../(hooks)/useBuyCredits";
 
 export default function GenerateForm() {
   const [form, setForm] = useState({ prompt: "" });
   const [imageUrl, setImageUrl] = useState("");
-  const { buyCredits } = useBuyCredits({
-    subscriptionType: SubscriptionType.Normal,
-  });
-
   function updateForm(key: string) {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
     };
   }
-
   /* async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     await generateIconAction(form.prompt);
@@ -35,11 +28,9 @@ export default function GenerateForm() {
     e.preventDefault();
     generateIcon.mutate({ prompt: form.prompt });
   }
-  /* TODO: remove await de generatePage return; where to put the Buy credits button ?;
-  delete this file comments; comment useBuyCredits hook */
+  /* TODO: remove await de generatePage return; comment useBuyCredits hook */
   return (
     <>
-      <button onClick={buyCredits}>Buy Credits</button>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center gap-4"
