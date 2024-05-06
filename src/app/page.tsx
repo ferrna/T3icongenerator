@@ -10,13 +10,16 @@ const HeroContent = () => {
           Generate Icons with a click of a button
         </h1>
         <p className="text-2xl">Generate Icons with a click of a button</p>
-        <Button className="mt-4 self-start">Start generating</Button>
+        <Button className="mt-4 self-start">
+          <Link href="/generate">Start generating</Link>
+        </Button>
       </aside>
       <Image
         src="/landing-banner.png"
         alt="a bunch of nice looking icons"
         width={500}
         height={400}
+        priority={true}
       />
     </section>
   );

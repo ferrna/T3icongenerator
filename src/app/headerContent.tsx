@@ -13,10 +13,11 @@ import { unstable_noStore } from "next/cache";
 function DropdownUserListItem(
   props: React.ComponentPropsWithoutRef<"li"> & { href?: string },
 ) {
+  const { href, ...propsWithoutHref } = props;
   return (
-    <li>
+    <li {...propsWithoutHref}>
       <PrimaryLink
-        href={props.href || "/"}
+        href={href || "/"}
         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
       >
         {props.children}
@@ -38,28 +39,19 @@ function DropdownUser({ showDropdown }: { showDropdown: boolean }) {
         className="py-2 text-sm text-gray-700 dark:text-gray-200"
         aria-labelledby="dropdownDefaultButton"
       >
-        <li>
-          <DropdownUserListItem href="/dashboard">
-            Dashboard
-          </DropdownUserListItem>
-        </li>
-        <li>
-          <DropdownUserListItem href="/settings">Settings</DropdownUserListItem>
-        </li>
-        <li>
-          <DropdownUserListItem href="/">
-            <button
-              onClick={() =>
-                signOut({
-                  callbackUrl: "/",
-                })
-              }
-              className="cursor-pointer"
-            >
-              Sign Out
-            </button>
-          </DropdownUserListItem>
-        </li>
+        <DropdownUserListItem href="/dashboard">Dashboard</DropdownUserListItem>
+
+        <DropdownUserListItem href="/settings">Settings</DropdownUserListItem>
+
+        <DropdownUserListItem
+          onClick={() =>
+            signOut({
+              callbackUrl: "/",
+            })
+          }
+        >
+          Sign Out
+        </DropdownUserListItem>
       </ul>
     </div>
   );
@@ -112,7 +104,6 @@ export default function HeaderContent({
             {userCredits} credits left
           </span>
         )}
-        {/* TODO: if is not logged redirect to login */}
         <Button onClick={buyCredits}>Buy Credits</Button>
         {sessionUser && isLoggedIn ? (
           <div className="flex items-center gap-3">

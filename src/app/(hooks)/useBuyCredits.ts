@@ -1,4 +1,5 @@
 import { loadStripe } from "@stripe/stripe-js";
+import { signIn, useSession } from "next-auth/react";
 import { env } from "~/env";
 import { api } from "~/trpc/react";
 
@@ -16,8 +17,13 @@ export function useBuyCredits({
   subscriptionType: SubscriptionType;
 }) {
   const checkout = api.checkout.generatePaymentPage.useMutation();
+  const session = useSession();
   return {
     buyCredits: async () => {
+      if (!session.data) {
+        signIn();
+        return;
+      }
       const response = await checkout.mutateAsync({ subscriptionType });
       const stripe = await stripePromise;
       await stripe?.redirectToCheckout({

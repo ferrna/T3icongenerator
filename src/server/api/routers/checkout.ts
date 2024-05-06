@@ -10,7 +10,7 @@ export const checkoutRouter = createTRPCRouter({
   generatePaymentPage: protectedProcedure
     .input(z.object({ subscriptionType: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return await stripe.checkout.sessions.create({
+      return stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
           {
