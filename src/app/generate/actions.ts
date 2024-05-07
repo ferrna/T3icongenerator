@@ -6,7 +6,6 @@ import { getServerAuthSession } from "~/server/auth";
 
 export async function generateIconAction(prompt: string) {
   const session = await getServerAuthSession();
-  console.log(session);
   const created = await api.generate.generateIcon({ prompt });
   return;
   //if (created?.userId !== session.user.id) throw new Error('User not authorized')

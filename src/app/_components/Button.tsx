@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 export const Button = (props: React.ComponentPropsWithoutRef<"button">) => {
-  const {className, ...propsWithoutClassname} = props;
+  const { className, ...propsWithoutClassname } = props;
   return (
     <button
       className={clsx(
@@ -14,7 +14,3 @@ export const Button = (props: React.ComponentPropsWithoutRef<"button">) => {
     </button>
   );
 };
-
-/* 
-  disabled={generateIcon.isPending}
-*/
