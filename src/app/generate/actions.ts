@@ -4,9 +4,9 @@ import { api } from "~/trpc/server";
 import { revalidatePath } from "next/cache";
 import { getServerAuthSession } from "~/server/auth";
 
-export async function generateIconAction(prompt: string) {
+export async function generateIconAction(prompt: string, color: string = "") {
   const session = await getServerAuthSession();
-  const created = await api.generate.generateIcon({ prompt });
+  const created = await api.generate.generateIcon({ prompt, color });
   return;
   //if (created?.userId !== session.user.id) throw new Error('User not authorized')
 
