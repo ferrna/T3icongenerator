@@ -8,12 +8,6 @@ const stripe = new Stripe(env.STRIPE_API_SECRET, {
   apiVersion: "2024-04-10",
 });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 const getCreditsBySubsciption = (SubscriptionType: string) => {
   switch (SubscriptionType) {
     case "normal":
