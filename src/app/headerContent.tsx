@@ -9,6 +9,7 @@ import React from "react";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { unstable_noStore } from "next/cache";
+import { Session } from "node_modules/next-auth/core/types";
 
 function DropdownUserListItem(
   props: React.ComponentPropsWithoutRef<"li"> & { href?: string },
@@ -17,7 +18,7 @@ function DropdownUserListItem(
   return (
     <li {...propsWithoutHref}>
       <PrimaryLink
-        href={href || "/"}
+        href={href ?? "/"}
         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
       >
         {props.children}
@@ -61,7 +62,7 @@ export default function HeaderContent({
   sessionUser,
   userCredits,
 }: {
-  sessionUser?: any;
+  sessionUser?: Session["user"];
   userCredits?: number;
 }) {
   const isLoggedIn = !!sessionUser;
@@ -112,8 +113,8 @@ export default function HeaderContent({
               onClick={() => setShowDropdown(!showDropdown)}
             >
               <Image
-                src={sessionUser?.image || ""}
-                alt=""
+                src={sessionUser?.image ?? ""}
+                alt="user image"
                 className="cursor-pointer rounded-full"
                 width={30}
                 height={30}

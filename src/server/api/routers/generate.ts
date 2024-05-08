@@ -4,7 +4,6 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import OpenAI from "openai";
 import { env } from "~/env";
 import { image64 } from "~/app/(data)/base64image";
-//@ts-ignore
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 // When no region or credentials are provided, the SDK will use the
@@ -38,7 +37,7 @@ async function generateIcon(prompt: string): Promise<string | undefined> {
   }
 }
 
-function generateFinalPrompt(prompt: string, color: string = ""): string {
+function generateFinalPrompt(prompt: string, color = ""): string {
   const colorPart = color ? ` of color ${color}` : "";
   const finalPrompt = `${prompt}${colorPart}`;
   return finalPrompt;

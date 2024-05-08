@@ -38,7 +38,7 @@ declare module "next-auth" {
  */
 export const authOptions: AuthOptions = {
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token }) {
       const dbUser = await db.user.findUnique({
         where: { email: token.email! },
       });
@@ -71,8 +71,8 @@ export const authOptions: AuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: env.NEXT_GOOGLE_CLIENT_ID!,
-      clientSecret: env.NEXT_GOOGLE_CLIENT_SECRET!,
+      clientId: env.NEXT_GOOGLE_CLIENT_ID,
+      clientSecret: env.NEXT_GOOGLE_CLIENT_SECRET,
     }),
   ],
 } satisfies AuthOptions;

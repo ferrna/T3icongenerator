@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import type { NextApiRequest, NextApiResponse } from "next/";
+import type { NextApiResponse } from "next/";
 import { env } from "../../../env";
 import { db } from "../../../server/db";
 import { headers } from "next/headers";
@@ -22,7 +22,7 @@ const getCreditsBySubsciption = (SubscriptionType: string) => {
 const handler = async (request: Request, response: NextApiResponse) => {
   if (request.method === "POST") {
     const body = await request.text();
-    const sig = headers().get("stripe-signature") as string;
+    const sig = headers().get("stripe-signature")!;
 
     let event;
 

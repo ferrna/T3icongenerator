@@ -1,13 +1,13 @@
 "use server";
 
 import { api } from "~/trpc/server";
-import { revalidatePath } from "next/cache";
 import { getServerAuthSession } from "~/server/auth";
 
-export async function generateIconAction(prompt: string, color: string = "") {
+export async function generateIconAction(prompt: string, color = "") {
   const session = await getServerAuthSession();
-  const created = await api.generate.generateIcon({ prompt, color });
-  return;
+  const created =
+    session && (await api.generate.generateIcon({ prompt, color }));
+  return created ? "ok" : "error";
   //if (created?.userId !== session.user.id) throw new Error('User not authorized')
 
   /* if (!session?.user) throw new Error('Unauthorized')

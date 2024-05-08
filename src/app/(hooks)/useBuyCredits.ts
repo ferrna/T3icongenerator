@@ -19,9 +19,9 @@ export function useBuyCredits({
   const checkout = api.checkout.generatePaymentPage.useMutation();
   const session = useSession();
   return {
-    buyCredits: async () => {
+    buyCredits: async (): Promise<void> => {
       if (!session.data) {
-        signIn();
+        await signIn();
         return;
       }
       const response = await checkout.mutateAsync({ subscriptionType });

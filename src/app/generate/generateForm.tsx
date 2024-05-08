@@ -6,6 +6,7 @@ import { api } from "~/trpc/react";
 import { Button } from "../_components/Button";
 import { LoaderCircle } from "lucide-react";
 import { colors, colorsInputs } from "./colors";
+import Image from "next/image";
 
 export default function GenerateForm() {
   const [form, setForm] = useState({ prompt: "", color: "" });
@@ -61,7 +62,7 @@ export default function GenerateForm() {
               className="mx-auto mt-6 animate-spin"
             />
           ) : (
-            <img
+            <Image
               src={`data:image/png;base64,${imageUrl}`}
               alt="generated-icon-image"
               className="mx-auto mt-4 animate-fade transition-all"
