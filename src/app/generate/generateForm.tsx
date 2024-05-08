@@ -25,7 +25,7 @@ export default function GenerateForm() {
   });
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    generateIcon.mutate({ prompt: form.prompt });
+    generateIcon.mutate({ prompt: form.prompt, color: form.color });
   }
   return (
     <>
@@ -42,7 +42,7 @@ export default function GenerateForm() {
         </FormGroup>
         <FormGroup>
           <label className="text-2xl">2. Pick a color</label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
             {colorsInputs({ colors, updateForm, form })}
           </div>
         </FormGroup>
@@ -64,7 +64,7 @@ export default function GenerateForm() {
             <img
               src={`data:image/png;base64,${imageUrl}`}
               alt="generated-icon-image"
-              className="animate-fade mx-auto mt-4 transition-all"
+              className="mx-auto mt-4 animate-fade transition-all"
               width={200}
               height={200}
             />

@@ -11,10 +11,10 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 // region and credentials from the local AWS config.
 const s3_client = new S3Client({
   credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: env.IG_AWS_ACCESS_KEY,
+    secretAccessKey: env.IG_AWS_SECRET_ACCESS_KEY,
   },
-  region: env.AWS_REGION,
+  region: env.IG_AWS_REGION,
 });
 
 const openAI_client = new OpenAI({
@@ -38,9 +38,15 @@ async function generateIcon(prompt: string): Promise<string | undefined> {
   }
 }
 
+function generateFinalPrompt(prompt: string, color: string = ""): string {
+  const colorPart = color ? ` of color ${color}` : "";
+  const finalPrompt = `${prompt}${colorPart}`;
+  return finalPrompt;
+}
+
 export const generateRouter = createTRPCRouter({
   generateIcon: protectedProcedure
-    .input(z.object({ prompt: z.string().min(1) }))
+    .input(z.object({ prompt: z.string().min(1), color: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { count } = await ctx.db.user.updateMany({
         where: {
@@ -59,8 +65,11 @@ export const generateRouter = createTRPCRouter({
         });
       }
 
-      const image_64string = await generateIcon(input.prompt);
+      const finalPrompt = generateFinalPrompt(input.prompt, input?.color);
+      // finalPrompt: 'an angry chicken of color orange'
+      const image_64string = await generateIcon(finalPrompt);
       if (!image_64string) {
+        /* TODO: give user credits */
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to generate image",
@@ -75,7 +84,7 @@ export const generateRouter = createTRPCRouter({
       });
 
       const command = new PutObjectCommand({
-        Bucket: env.AWS_BUCKET,
+        Bucket: env.IG_AWS_BUCKET,
         Body: Buffer.from(image_64string, "base64"),
         Key: `${dbIcon.id}`,
         ContentType: "image/gif",
