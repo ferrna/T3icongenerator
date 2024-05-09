@@ -71,8 +71,8 @@ export const authOptions: AuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: env.NEXT_GOOGLE_CLIENT_ID,
-      clientSecret: env.NEXT_GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 } satisfies AuthOptions;

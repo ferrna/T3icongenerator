@@ -123,7 +123,7 @@ export default function HeaderContent({
             </div>
           </div>
         ) : (
-          <button onClick={() => signIn()} className="cursor-pointer">
+          <button onClick={async() => await signIn()} className="cursor-pointer">
             &nbsp; Sign In
           </button>
         )}

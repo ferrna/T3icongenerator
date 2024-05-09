@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Icon Generator",
+  title: "Icon Generator AI",
   description: "AI icon generator",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
