@@ -18,7 +18,6 @@ export default function GenerateForm() {
   }
   const generateIcon = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      setForm({ prompt: "", color: "" });
       console.log("mutation finished", data);
       if (!data.imageUrl) return;
       setImageUrl(data.imageUrl);
@@ -50,9 +49,9 @@ export default function GenerateForm() {
         <Button
           type="submit"
           disabled={generateIcon.isPending}
-          className="mt-3 w-full text-gray-700"
+          className="mt-3 w-full text-gray-200 hover:text-white text-lg"
         >
-          {generateIcon.isPending ? "Submitting..." : "Submit"}
+          {generateIcon.isPending ? "Submitting..." : "Generate"}
         </Button>
         {imageUrl &&
           (generateIcon.isPending ? (

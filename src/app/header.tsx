@@ -7,7 +7,9 @@ export default async function Header() {
   const getCredits = session ? await api.user.getCredits() : { credits: 2 };
 
   return (
-    <header className="relative z-10 w-full border-b bg-gray-100 bg-transparent px-8 py-4 dark:border-[#2B3544] dark:bg-gray-700">
+    <header className="sticky top-0 z-30 w-full border-t-0 border-t-cyan-900 border-b bg-gray-100 px-8 py-4 dark:border-b-[#2B3544] dark:bg-slate-900/75 
+    backdrop-blur transition-colors duration-500 dark:border-b-slate-50/[0.06] supports-backdrop-blur:bg-white/95"
+   >
       <HeaderContent
         sessionUser={session?.user}
         userCredits={getCredits.credits}

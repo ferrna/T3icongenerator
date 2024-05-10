@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import Header from "./header";
 import Providers from "./providers";
+import BgHome from "./bgHome";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,11 +25,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`relative font-sans antialiased ${inter.variable}`}>
         <TRPCReactProvider>
           <Providers>
+            <BgHome  />
             <Header />
+            <div className="z-20 relative">
             {children}
+
+            </div>
           </Providers>
         </TRPCReactProvider>
       </body>

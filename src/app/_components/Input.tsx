@@ -7,7 +7,7 @@ export function Input(props: React.ComponentPropsWithoutRef<"input">) {
       type="text"
       {...propsWithoutClassname}
       className={clsx(
-        "border-1 rounded border-black p-1.5 text-gray-800",
+        "border-1 rounded border-black p-1.5 text-gray-800 drop-shadow shadow-black",
         className,
       )}
     ></input>

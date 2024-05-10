@@ -65,6 +65,7 @@ export default function HeaderContent({
   sessionUser?: Session["user"];
   userCredits?: number;
 }) {
+
   const isLoggedIn = !!sessionUser;
   const { buyCredits } = useBuyCredits({
     subscriptionType: SubscriptionType.Normal,
@@ -84,7 +85,7 @@ export default function HeaderContent({
           className="flex min-w-[60px] cursor-pointer items-center
           text-xl font-medium"
         >
-          <Image src="/" alt="logo" width={40} height={40} />
+          <Image src="/ig-icon.png" alt="ig-logo" width={40} height={40} />
           <span className="hidden pl-1 tracking-tight md:block">
             Icon Generator
           </span>
@@ -94,14 +95,17 @@ export default function HeaderContent({
             <PrimaryLink href="/generate">Generate</PrimaryLink>
           </li>
           <li>
-            <PrimaryLink href="/browse">Browse</PrimaryLink>
+            <PrimaryLink href="/community">Community</PrimaryLink>
+          </li>
+          <li>
+            <PrimaryLink href="/pricing">Pricing</PrimaryLink>
           </li>
         </ul>
       </aside>
       <aside className="flex items-center gap-4">
         {isLoggedIn && userCredits && (
-          <span className="flex items-center gap-1 text-sm text-gray-300">
-            <RefreshCwIcon size={18} color="#d6d6d6" strokeWidth={1.25} />
+          <span className="flex items-center gap-1 text-sm text-gray-700 dark:text-[#d6d6d6]">
+            <RefreshCwIcon size={18}  strokeWidth={1.25} />
             {userCredits} credits left
           </span>
         )}

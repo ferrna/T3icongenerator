@@ -10,7 +10,7 @@ export default function Generate() {
   return (
     <main
       className="container m-auto mb-24 flex max-w-screen-md
-    flex-col gap-6 px-4 py-8 md:px-8"
+    flex-col gap-6 px-4 py-8 md:py-10 md:px-8 z-20 relative"
     >
       <h2 className="-mb-1 text-4xl font-bold">Generate Icons</h2>
       <p className="text-lg">Fill the next form to start generating icons.</p>
