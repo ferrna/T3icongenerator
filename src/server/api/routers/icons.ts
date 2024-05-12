@@ -4,7 +4,11 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import OpenAI from "openai";
 import { env } from "~/env";
 import { image64 } from "~/app/(data)/base64image";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // When no region or credentials are provided, the SDK will use the
 // region and credentials from the local AWS config.
@@ -43,7 +47,7 @@ function generateFinalPrompt(prompt: string, color = ""): string {
   return finalPrompt;
 }
 
-export const generateRouter = createTRPCRouter({
+export const iconsRouter = createTRPCRouter({
   generateIcon: protectedProcedure
     .input(z.object({ prompt: z.string().min(1), color: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -68,7 +72,7 @@ export const generateRouter = createTRPCRouter({
       // finalPrompt: 'an angry chicken of color orange'
       const image_64string = await generateIcon(finalPrompt);
       if (!image_64string) {
-        /* TODO: give user credits */
+        /* TODO: give user credits back */
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to generate image",
@@ -77,7 +81,7 @@ export const generateRouter = createTRPCRouter({
 
       const dbIcon = await ctx.db.icon.create({
         data: {
-          prompt: input.prompt,
+          prompt: finalPrompt,
           userId: ctx.session.user.id,
         },
       });
@@ -95,4 +99,64 @@ export const generateRouter = createTRPCRouter({
         imageUrl: image_64string,
       };
     }),
+  getIcons: protectedProcedure.query(async ({ ctx }) => {
+    // check user
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No user with that session id finded.",
+      });
+    }
+
+    // get icons
+    let icons: {
+      id: string;
+      prompt: string | null;
+      userId: string | null;
+      image64?: string | null;
+    }[] = await ctx.db.icon.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+    if (icons.length === 0) {
+      return [];
+    }
+
+    // retrive images
+    const commands: GetObjectCommand[] = icons.map(
+      (i) =>
+        new GetObjectCommand({
+          Bucket: env.IG_AWS_BUCKET,
+          Key: i.id,
+        }),
+    );
+    const responses = await Promise.all(
+      commands.map(async (command) => {
+        const base64EncodedBody: string | undefined = await (
+          await s3_client.send(command)
+        )?.Body?.transformToString("base64");
+        if (!base64EncodedBody) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to retrieve image",
+          });
+        }
+        return base64EncodedBody;
+      }),
+    );
+
+    // return icons
+    return icons.map((i, index) => {
+      return {
+        ...i,
+        image64: responses[index],
+      };
+    });
+  }),
 });

@@ -65,7 +65,6 @@ export default function HeaderContent({
   sessionUser?: Session["user"];
   userCredits?: number;
 }) {
-
   const isLoggedIn = !!sessionUser;
   const { buyCredits } = useBuyCredits({
     subscriptionType: SubscriptionType.Normal,
@@ -97,15 +96,20 @@ export default function HeaderContent({
           <li>
             <PrimaryLink href="/community">Community</PrimaryLink>
           </li>
+          {isLoggedIn && (
+            <li>
+              <PrimaryLink href="/collection">My Icons</PrimaryLink>
+            </li>
+          )}
           <li>
             <PrimaryLink href="/pricing">Pricing</PrimaryLink>
           </li>
         </ul>
       </aside>
       <aside className="flex items-center gap-4">
-        {isLoggedIn && userCredits && (
+        {isLoggedIn && !Number.isNaN(userCredits) && (
           <span className="flex items-center gap-1 text-sm text-gray-700 dark:text-[#d6d6d6]">
-            <RefreshCwIcon size={18}  strokeWidth={1.25} />
+            <RefreshCwIcon size={18} strokeWidth={1.25} />
             {userCredits} credits left
           </span>
         )}
@@ -127,7 +131,10 @@ export default function HeaderContent({
             </div>
           </div>
         ) : (
-          <button onClick={async() => await signIn()} className="cursor-pointer">
+          <button
+            onClick={async () => await signIn()}
+            className="cursor-pointer"
+          >
             &nbsp; Sign In
           </button>
         )}

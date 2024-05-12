@@ -16,8 +16,8 @@ export default function GenerateForm() {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
     };
   }
-  const generateIcon = api.generate.generateIcon.useMutation({
-    onSuccess(data) {
+  const generateIcon = api.icons.generateIcon.useMutation({
+    onSuccess(data: any) {
       console.log("mutation finished", data);
       if (!data.imageUrl) return;
       setImageUrl(data.imageUrl);
@@ -49,18 +49,18 @@ export default function GenerateForm() {
         <Button
           type="submit"
           disabled={generateIcon.isPending}
-          className="mt-3 w-full text-gray-200 hover:text-white text-lg"
+          className="mt-3 w-full text-lg text-gray-200 hover:text-white"
         >
           {generateIcon.isPending ? "Submitting..." : "Generate"}
         </Button>
-        {imageUrl &&
-          (generateIcon.isPending ? (
-            <LoaderCircle
-              color="#17977d"
-              strokeWidth={1.25}
-              className="mx-auto mt-6 animate-spin"
-            />
-          ) : (
+        {generateIcon.isPending ? (
+          <LoaderCircle
+            color="#17977d"
+            strokeWidth={1.25}
+            className="mx-auto mt-6 animate-spin"
+          />
+        ) : (
+          imageUrl && (
             <Image
               src={`data:image/png;base64,${imageUrl}`}
               alt="generated-icon-image"
@@ -68,7 +68,13 @@ export default function GenerateForm() {
               width={200}
               height={200}
             />
-          ))}
+          )
+        )}
+        {generateIcon.isError && (
+          <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
+            {generateIcon.error.message}
+          </p>
+        )}
       </form>
     </>
   );
