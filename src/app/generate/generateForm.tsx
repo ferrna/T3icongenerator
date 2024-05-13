@@ -4,7 +4,7 @@ import { FormGroup } from "../_components/FormGroup";
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { Button } from "../_components/Button";
-import { LoaderCircle } from "lucide-react";
+import { DownloadIcon, LoaderCircle } from "lucide-react";
 import { colors, colorsInputs } from "./colors";
 import Image from "next/image";
 
@@ -27,6 +27,14 @@ export default function GenerateForm() {
     e.preventDefault();
     generateIcon.mutate({ prompt: form.prompt, color: form.color });
   }
+  const handleDownload = () => {
+    const element = document.createElement("a");
+    element.href = `data:image/png;base64,${imageUrl ?? ""}`;
+    element.download = `image_${form.prompt}.png`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
   return (
     <>
       <form
@@ -53,29 +61,67 @@ export default function GenerateForm() {
         >
           {generateIcon.isPending ? "Submitting..." : "Generate"}
         </Button>
-        {generateIcon.isPending ? (
-          <LoaderCircle
-            color="#17977d"
-            strokeWidth={1.25}
-            className="mx-auto mt-6 animate-spin"
-          />
-        ) : (
-          imageUrl && (
-            <Image
-              src={`data:image/png;base64,${imageUrl}`}
-              alt="generated-icon-image"
-              className="mx-auto mt-4 animate-fade transition-all"
-              width={200}
-              height={200}
+        <div className="flex min-h-56 w-full flex-col items-center justify-center gap-2">
+          {generateIcon.isPending ? (
+            <LoaderCircle
+              color="#17977d"
+              strokeWidth={1.25}
+              className="mx-auto mt-6 animate-spin"
             />
-          )
-        )}
-        {generateIcon.isError && (
-          <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
-            {generateIcon.error.message}
-          </p>
-        )}
+          ) : (
+            imageUrl && (
+              <picture className="relative mx-auto mt-8">
+                <Image
+                  src={`data:image/png;base64,${imageUrl}`}
+                  alt="generated-icon-image"
+                  className="peer mx-auto animate-fade transition-all rounded-lg shadow-sm"
+                  width={200}
+                  height={200}
+                />
+                <div
+                  className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex
+                   w-max h-max rounded-full flex-col items-center justify-center gap-1 transition-all
+                 hover:bg-slate-600/70 peer-hover:bg-slate-600/70 p-4
+                peer-hover:*:inline-block"
+                >
+                  <Button
+                    title="Download Icon"
+                    className="hidden w-auto group-hover:inline-block"
+                    onClick={handleDownload}
+                  >
+                    <DownloadIcon width={40} height={40} />
+                  </Button>
+                  <p className="text-white hidden w-auto group-hover:inline-block pointer-events-none">
+                    Download icon
+                  </p>
+                </div>
+              </picture>
+            )
+          )}
+          {generateIcon.isError && (
+            <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
+              {generateIcon.error.message}
+            </p>
+          )}
+        </div>
       </form>
     </>
   );
 }
+
+/* <div
+                  className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex
+                   w-max h-max rounded-full flex-col items-center justify-center gap-1 transition-all
+                 hover:bg-slate-500/50 peer-hover:bg-slate-500/50 p-4
+                 peer-hover:[&>*:first-child]:inline-block"
+                >
+                  <Button
+                    title="Download Icon"
+                    className="hidden w-auto after:hidden group-hover:after:inline-block group-hover:inline-block relative after:absolute after:left-1/2 after:-translate-x-1/2
+                    after:pt-4 after:text-center after:leading-tight after:text-slate-200 
+                    after:content-['Download_png']"
+                  >
+                    <DownloadIcon width={40} height={40} />
+                  </Button>
+                </div>
+              </picture> */

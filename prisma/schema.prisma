@@ -70,9 +70,10 @@ model User {
 
 model Icon {
     id     String  @id @default(cuid())
-    prompt String?
+    prompt String
     User   User?   @relation(fields: [userId], references: [id])
     userId String?
+    createdAt DateTime @default(now())
 }
 
 model VerificationToken {

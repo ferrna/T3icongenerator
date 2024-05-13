@@ -8,8 +8,9 @@ import { Button } from "../_components/Button";
 interface IconWithImage64 extends Icon {
   image64: string | undefined;
   id: string;
-  prompt: string | null;
+  prompt: string;
   userId: string | null;
+  createdAt: Date;
 }
 
 function IconInfo({ data }: { data: IconWithImage64 }) {
@@ -29,6 +30,7 @@ function IconInfo({ data }: { data: IconWithImage64 }) {
         alt={data.prompt ?? ""}
         width={160}
         height={160}
+        className="rounded-lg shadow-sm"
       />
       <div className="relative flex flex-col items-center justify-center">
         <div className="absolute inset-x-0 inset-y-0 flex items-center">
@@ -88,7 +90,7 @@ export default function CollectionContent() {
             <img
               src={`data:image/png;base64,${icon?.image64 ?? ""}`}
               alt={icon.prompt ?? ""}
-              className="w-full"
+              className="w-full rounded-lg shadow-sm"
             />
           </li>
         ));
@@ -111,4 +113,3 @@ export default function CollectionContent() {
   );
 }
 
-/* TODO: Icon: prompt type string not string|null */
