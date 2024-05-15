@@ -7,10 +7,20 @@ import { Button } from "../_components/Button";
 import { DownloadIcon, LoaderCircle } from "lucide-react";
 import { colors, colorsInputs } from "./colors";
 import Image from "next/image";
+import { styles, stylesInputs } from "./styles";
+import { UseTRPCMutationResult } from "@trpc/react-query/shared";
 
 export default function GenerateForm() {
-  const [form, setForm] = useState({ prompt: "", color: "" });
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    prompt: "",
+    color: "",
+    style: "",
+    lines: "",
+    numberOfIcons: "1",
+  });
+  const [imageUrls, setImageUrls] = useState<(string | undefined)[] | null>(
+    null,
+  );
   const [userIconId, setUserIconId] = useState<string | null>(null);
   function updateForm(key: string) {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
@@ -18,11 +28,14 @@ export default function GenerateForm() {
     };
   }
   const generateIcon = api.icons.generateIcon.useMutation({
-    onSuccess(data: any) {
-      console.log("mutation finished", data);
-      if (!data.imageUrl) return;
-      setImageUrl(data.imageUrl);
-      data?.id && setUserIconId(data.id);
+    onSuccess(data: { imageUrl: string | undefined; id: string }[]) {
+      setImageUrls(
+        data.map((i) => {
+          if (!i.imageUrl) return;
+          return i.imageUrl;
+        }),
+      );
+      data[0]?.id && setUserIconId(data[0].id);
     },
   });
   const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
@@ -33,21 +46,15 @@ export default function GenerateForm() {
   });
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    generateIcon.mutate({ prompt: form.prompt, color: form.color });
+    console.log(form);
+    generateIcon.mutate({
+      prompt: form.prompt,
+      color: form.color,
+      style: form.style,
+      lines: form.lines,
+      numberOfIcons: parseInt(form.numberOfIcons),
+    });
   }
-  const handleDownload = (e: React.FormEvent) => {
-    e.preventDefault();
-    const element = document.createElement("a");
-    element.href = `data:image/png;base64,${imageUrl ?? ""}`;
-    element.download = `image_${form.prompt}.png`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-  const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value === "on" ? "off" : "on";
-    toggleKeepPrivate.mutate({ id: userIconId! });
-  };
   return (
     <>
       <form
@@ -67,6 +74,27 @@ export default function GenerateForm() {
             {colorsInputs({ colors, updateForm, form })}
           </div>
         </FormGroup>
+        <FormGroup>
+          <label className="text-2xl">3. Choose the style</label>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
+            {stylesInputs({ styles, updateForm, form })}
+          </div>
+        </FormGroup>
+        <FormGroup>
+          <label className="text-2xl">
+            4. How many icons do you want to generate?
+          </label>
+          <Input
+            inputMode="numeric"
+            required
+            type="number"
+            min={1}
+            max={10}
+            pattern="[0-9]|10"
+            value={form.numberOfIcons}
+            onChange={updateForm("numberOfIcons")}
+          ></Input>
+        </FormGroup>
         <Button
           type="submit"
           disabled={generateIcon.isPending}
@@ -82,57 +110,8 @@ export default function GenerateForm() {
               className="mx-auto mt-6 animate-spin"
             />
           ) : (
-            imageUrl && (
-              <picture className="mt-8">
-                <div className="relative mx-auto w-max">
-                  <Image
-                    src={`data:image/png;base64,${imageUrl}`}
-                    alt="generated-icon-image"
-                    className="peer mx-auto animate-fade rounded-lg shadow-sm transition-all"
-                    width={200}
-                    height={200}
-                  />
-                  <div
-                    className="z-15 group absolute inset-x-0 inset-y-0 m-auto hidden h-max w-max
-                   flex-col items-center justify-center gap-1 rounded-full p-4 transition-all hover:animate-buttonFade
-                 hover:bg-slate-600/70 peer-hover:bg-slate-600/70 peer-hover:*:inline-block
-                md:flex"
-                  >
-                    <Button
-                      title="Download Icon"
-                      className="hidden w-auto group-hover:inline-block"
-                      onClick={handleDownload}
-                    >
-                      <DownloadIcon width={40} height={40} />
-                    </Button>
-                    <p className="pointer-events-none hidden w-auto text-white group-hover:inline-block">
-                      Download icon
-                    </p>
-                  </div>
-                </div>
-                <div className="mx-auto mt-4 flex flex-col items-center gap-8 p-8">
-                  <div className="flex w-full flex-col items-center justify-center gap-2 md:hidden">
-                    <Button
-                      title="Download Icon"
-                      className="w-auto"
-                      onClick={handleDownload}
-                    >
-                      <DownloadIcon width={20} height={20} />
-                    </Button>
-                    <p className="w-auto">Download icon</p>
-                  </div>
-                  <div className="flex flex-col-reverse justify-between gap-2 text-gray-700 md:flex-row md:gap-12 dark:text-[#d6d6d6]">
-                    <span>Share with community</span>
-                    <input
-                      type="checkbox"
-                      defaultChecked={true}
-                      onChange={handleKeepPrivate}
-                      disabled={toggleKeepPrivate.isPending}
-                    />
-                  </div>
-                </div>
-              </picture>
-            )
+            imageUrls &&
+            renderImages(imageUrls, userIconId, form.prompt, toggleKeepPrivate)
           )}
           {generateIcon.isError && (
             <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
@@ -142,6 +121,89 @@ export default function GenerateForm() {
         </div>
       </form>
     </>
+  );
+}
+
+function renderImages(
+  imageUrls: (string | undefined)[],
+  userIconId: string | null,
+  prompt: string,
+  toggleKeepPrivate: any,
+) {
+  const handleDownload = (
+    e: React.FormEvent,
+    imageUrls: (string | undefined)[],
+  ) => {
+    e.preventDefault();
+    return imageUrls.map((imageUrl) => {
+      if (!imageUrl) return;
+      const element = document.createElement("a");
+      element.href = `data:image/png;base64,${imageUrl ?? ""}`;
+      element.download = `image_${prompt}.png`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    });
+  };
+
+  const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value === "on" ? "off" : "on";
+    toggleKeepPrivate.mutate({ id: userIconId! });
+  };
+  return (
+    <picture className="mt-8 max-w-full">
+      <div className="mx-auto flex w-max max-w-full flex-col flex-wrap items-center justify-center gap-6 sm:flex-row">
+        {imageUrls.map((imageUrl) => (
+          <div className="relative w-max">
+            <Image
+              src={`data:image/png;base64,${imageUrl}`}
+              alt="generated-icon-image"
+              className="peer mx-auto animate-fade rounded-lg shadow-sm transition-all"
+              width={200}
+              height={200}
+            />
+            <div
+              className="z-15 group absolute inset-x-0 inset-y-0 m-auto hidden h-max w-max
+                   flex-col items-center justify-center gap-1 rounded-full p-4 transition-all hover:animate-buttonFade
+                 hover:bg-slate-600/70 peer-hover:bg-slate-600/70 peer-hover:*:inline-block
+                md:flex"
+            >
+              <Button
+                title="Download Icon"
+                className="hidden w-auto group-hover:inline-block"
+                onClick={(e) => handleDownload(e, [imageUrl])}
+              >
+                <DownloadIcon width={40} height={40} />
+              </Button>
+              <p className="pointer-events-none hidden w-auto text-white group-hover:inline-block">
+                Download icon
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mx-auto mt-4 flex flex-col items-center gap-8 p-8">
+        <div className="flex w-full flex-col items-center justify-center gap-2 md:hidden">
+          <Button
+            title="Download Icon"
+            className="w-auto"
+            onClick={(e) => handleDownload(e, imageUrls)}
+          >
+            <DownloadIcon width={20} height={20} />
+          </Button>
+          <p className="w-auto">Download icon</p>
+        </div>
+        <div className="flex flex-col-reverse justify-between gap-2 text-gray-700 md:flex-row md:gap-12 dark:text-[#d6d6d6]">
+          <span>Share with community</span>
+          <input
+            type="checkbox"
+            defaultChecked={true}
+            onChange={handleKeepPrivate}
+            disabled={toggleKeepPrivate.isPending}
+          />
+        </div>
+      </div>
+    </picture>
   );
 }
 

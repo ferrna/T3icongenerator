@@ -13,6 +13,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { Image } from "openai/resources/images.mjs";
 
 // When no region or credentials are provided, the SDK will use the
 // region and credentials from the local AWS config.
@@ -28,41 +29,59 @@ const openAI_client = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
-async function generateIcon(prompt: string): Promise<string | undefined> {
+async function generateIcon(
+  prompt: string,
+  numberOfIcons: number,
+): Promise<{ b64_json: string }[] | Image[]> {
   if (env.MOCK_DALLE === "true") {
     // url returned by Dall-e, dont store directly in case of changes, instead store 64 base64 image
     //return "https://oaidalleapiprodscus.blob.core.windows.net/private/org-rP9tYNZdnt3y4y0dWwnnOu0e/user-aBWiiq0jmXVfAM0tw2rClQJP/img-vddV9PRLu6mt5g9SqjD2L6m3.png?st=2024-04-28T23%3A59%3A32Z&se=2024-04-29T01%3A59%3A32Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-04-28T23%3A09%3A44Z&ske=2024-04-29T23%3A09%3A44Z&sks=b&skv=2021-08-06&sig=tiRfyDHJ6TOo5BHKpVuPgRiIFXQZ/P503quHlxf6LTk%3D";
-    return image64;
+    return [{ b64_json: image64 }, { b64_json: image64 }];
   }
   const response = await openAI_client.images.generate({
     model: "dall-e-2",
     prompt,
-    n: 1,
+    n: numberOfIcons,
     size: "512x512",
     response_format: "b64_json",
   });
-  return response.data[0]?.b64_json;
+
+  return response.data;
 }
 
-function generateFinalPrompt(prompt: string, color = ""): string {
-  const colorPart = color ? ` of color ${color}` : "";
-  const finalPrompt = `${prompt}${colorPart}`;
+function generateFinalPrompt(
+  prompt: string,
+  color = "",
+  style = "",
+  lines = "",
+): string {
+  const colorPart = color ? `, featuring ${color} colors` : "";
+  const stylePart = style ? ` in ${style} style` : "";
+  const linesPart = lines ? ` and ${lines} lines` : "";
+  const finalPrompt = `an icon of ${prompt}${stylePart}${colorPart}${linesPart}`;
   return finalPrompt;
 }
 
 export const iconsRouter = createTRPCRouter({
   generateIcon: protectedProcedure
     .input(
-      z.object({ prompt: z.string().min(1), color: z.string().optional() }),
+      z.object({
+        prompt: z.string().min(1),
+        color: z.string().optional(),
+        style: z.string().optional(),
+        lines: z.string().optional(),
+        numberOfIcons: z.number().min(1).max(10),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
+      const nIcons = input.numberOfIcons;
       const { count } = await ctx.db.user.updateMany({
         where: {
           id: ctx.session.user.id,
-          credits: { gte: 1 },
+          credits: { gte: nIcons },
         },
         data: {
-          credits: { decrement: 1 },
+          credits: { decrement: nIcons },
         },
       });
       if (count <= 0) {
@@ -72,16 +91,23 @@ export const iconsRouter = createTRPCRouter({
         });
       }
 
-      const finalPrompt = generateFinalPrompt(input.prompt, input?.color);
-      const image_64string = await generateIcon(finalPrompt);
-      if (!image_64string) {
+      const finalPrompt = generateFinalPrompt(
+        input.prompt,
+        input?.color,
+        input?.style,
+        input?.lines,
+      );
+      const images_64strings = await generateIcon(finalPrompt, nIcons);
+
+      // in case of error in Dall-e
+      if (!images_64strings) {
         // give user credits back
         await ctx.db.user.updateMany({
           where: {
             id: ctx.session.user.id,
           },
           data: {
-            credits: { increment: 1 },
+            credits: { increment: nIcons },
           },
         });
         // throw error
@@ -90,35 +116,38 @@ export const iconsRouter = createTRPCRouter({
           message: "Failed to generate image",
         });
       }
-      let dbIcon: {
-        id: string;
-        prompt: string;
-        userId: string | null;
-        keepPrivate: boolean;
-        createdAt: Date;
-      } | null = null;
-      if (env.MOCK_DALLE !== "true") {
-        dbIcon = await ctx.db.icon.create({
-          data: {
-            prompt: finalPrompt,
-            userId: ctx.session.user.id,
-          },
-        });
 
-        const command = new PutObjectCommand({
-          Bucket: env.IG_AWS_BUCKET,
-          Body: Buffer.from(image_64string, "base64"),
-          Key: `${dbIcon.id}`,
-          ContentType: "image/gif",
-          ContentEncoding: "base64",
-        });
-        await s3_client.send(command);
+      if (env.MOCK_DALLE === "true") {
+        return [
+          { imageUrl: images_64strings[0]!.b64_json, id: "" },
+          { imageUrl: images_64strings[1]!.b64_json, id: "" },
+        ];
       }
-
-      return {
-        imageUrl: image_64string,
-        id: dbIcon?.id ?? "",
-      };
+      const responses = await Promise.all(
+        images_64strings.map(async (image, idx) => {
+          const dbIcon = await ctx.db.icon.create({
+            data: {
+              prompt: finalPrompt,
+              userId: ctx.session.user.id,
+              keepPrivate: idx === 0 ? false : true,
+            },
+          });
+          await s3_client.send(
+            new PutObjectCommand({
+              Bucket: env.IG_AWS_BUCKET,
+              Body: Buffer.from(image.b64_json as string, "base64"),
+              Key: `${dbIcon.id}`,
+              ContentType: "image/gif",
+              ContentEncoding: "base64",
+            }),
+          );
+          return {
+            imageUrl: image.b64_json,
+            id: dbIcon?.id,
+          };
+        }),
+      );
+      return responses;
     }),
   getIcons: protectedProcedure.query(async ({ ctx }) => {
     // check user

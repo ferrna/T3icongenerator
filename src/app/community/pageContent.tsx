@@ -148,10 +148,12 @@ export default function CommunityContent({
         {renderQueryState()}
         {renderIcons(userIcons)}
       </ul>
-      <div className="p-6 text-center">
-        Have fun generating {switchPromptToAction(userIconsCount)}
-      </div>
-      {showInfo.id && userIcons && !isPending && (
+      {!isPending && (
+        <div className="p-6 text-center">
+          Have fun generating {switchPromptToAction(userIconsCount)}
+        </div>
+      )}
+      {showInfo.id && userIcons && (
         <IconInfo data={userIcons?.find((i) => i.id === showInfo.id)!} />
       )}
     </div>
