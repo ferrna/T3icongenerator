@@ -113,6 +113,7 @@ export default function HeaderContent({
             {userCredits} credits left
           </span>
         )}
+        {/* TODO: redirect to login if not logged in */}
         <Button onClick={buyCredits}>Buy Credits</Button>
         {sessionUser && isLoggedIn ? (
           <div className="flex items-center gap-3">

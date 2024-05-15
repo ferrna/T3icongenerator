@@ -20,4 +20,27 @@ export const userRouter = createTRPCRouter({
       credits: user.credits,
     };
   }),
+  getUserHaveIcons: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      include: {
+        _count: {
+          select: { icons: true },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No user with that id finded.",
+      });
+    }
+
+    return {
+      userIconsCount: user._count.icons
+    };
+  }),
 });

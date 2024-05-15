@@ -3,7 +3,7 @@ import CollectionContent from "./pageContent";
 export const revalidate = 120;
 
 export const metadata = {
-  title: "My collection",
+  title: "My icons",
   description:
     "Your collection of beautiful icons with OpenAI's Artificial Inteligence.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
