@@ -12,6 +12,7 @@ interface IconWithImage64 extends Icon {
   id: string;
   prompt: string;
   userId: string | null;
+  keepPrivate: boolean;
   createdAt: Date;
 }
 
@@ -150,7 +151,7 @@ export default function CommunityContent({
       <div className="p-6 text-center">
         Have fun generating {switchPromptToAction(userIconsCount)}
       </div>
-      {showInfo.id && userIcons && (
+      {showInfo.id && userIcons && !isPending && (
         <IconInfo data={userIcons?.find((i) => i.id === showInfo.id)!} />
       )}
     </div>

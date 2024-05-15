@@ -1,6 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import OpenAI from "openai";
 import { env } from "~/env";
 import { image64 } from "~/app/(data)/base64image";
@@ -86,9 +90,15 @@ export const iconsRouter = createTRPCRouter({
           message: "Failed to generate image",
         });
       }
-
+      let dbIcon: {
+        id: string;
+        prompt: string;
+        userId: string | null;
+        keepPrivate: boolean;
+        createdAt: Date;
+      } | null = null;
       if (env.MOCK_DALLE !== "true") {
-        const dbIcon = await ctx.db.icon.create({
+        dbIcon = await ctx.db.icon.create({
           data: {
             prompt: finalPrompt,
             userId: ctx.session.user.id,
@@ -107,6 +117,7 @@ export const iconsRouter = createTRPCRouter({
 
       return {
         imageUrl: image_64string,
+        id: dbIcon?.id ?? "",
       };
     }),
   getIcons: protectedProcedure.query(async ({ ctx }) => {
@@ -128,6 +139,7 @@ export const iconsRouter = createTRPCRouter({
       id: string;
       prompt: string;
       userId: string | null;
+      keepPrivate: boolean;
       createdAt: Date;
     }[] = await ctx.db.icon.findMany({
       where: {
@@ -175,11 +187,12 @@ export const iconsRouter = createTRPCRouter({
       id: string;
       prompt: string;
       userId: string | null;
+      keepPrivate: boolean;
       createdAt: Date;
     }[] = await ctx.db.icon.findMany({
       take: 15,
       orderBy: {
-        createdAt: "desc"
+        createdAt: "desc",
       },
     });
 
@@ -213,5 +226,34 @@ export const iconsRouter = createTRPCRouter({
         image64: responses[index],
       };
     });
-  })
+  }),
+  postToggleKeepPrivate: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // find icon
+      const icon = await ctx.db.icon.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!icon) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No icon with that id finded.",
+        });
+      }
+      //toggle keep private ('share with community')
+      return await ctx.db.icon.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          keepPrivate: !icon.keepPrivate,
+        },
+        select: {
+          keepPrivate: true,
+          id: true,
+        },
+      });
+    }),
 });

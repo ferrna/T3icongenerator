@@ -4,10 +4,10 @@ import FooterAside from "./footerAside";
 export default async function Footer() {
   return (
     <footer
-      className="w-full border-t border-t-cyan-900 bg-gray-100 
-      dark:border-t-[#2B3544] dark:bg-slate-50/[0.06] snap-mandatory snap-y *:snap-end"
+      className="w-full snap-y snap-mandatory border-t 
+      border-t-cyan-900 bg-gray-100 *:snap-end dark:border-t-[#2B3544] dark:bg-slate-50/[0.06]"
     >
-      <div className="w-full p-8 pb-6 pt-4 text-sm">
+      <div className="flex w-full justify-center p-8 pb-6 pt-4 text-sm">
         <div className="container flex w-full justify-between">
           <div className="">
             <span className="mb-2 block">

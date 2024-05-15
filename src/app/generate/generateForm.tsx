@@ -11,6 +11,7 @@ import Image from "next/image";
 export default function GenerateForm() {
   const [form, setForm] = useState({ prompt: "", color: "" });
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [userIconId, setUserIconId] = useState<string | null>(null);
   function updateForm(key: string) {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
@@ -21,6 +22,13 @@ export default function GenerateForm() {
       console.log("mutation finished", data);
       if (!data.imageUrl) return;
       setImageUrl(data.imageUrl);
+      data?.id && setUserIconId(data.id);
+    },
+  });
+  const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
+    onSuccess(data: any) {
+      /* todo: agregar toast */
+      console.log("mutation finished", data);
     },
   });
   async function handleSubmit(e: React.FormEvent) {
@@ -35,6 +43,10 @@ export default function GenerateForm() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  };
+  const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value === "on" ? "off" : "on";
+    toggleKeepPrivate.mutate({ id: userIconId! });
   };
   return (
     <>
@@ -111,7 +123,12 @@ export default function GenerateForm() {
                   </div>
                   <div className="flex flex-col-reverse justify-between gap-2 text-gray-700 md:flex-row md:gap-12 dark:text-[#d6d6d6]">
                     <span>Share with community</span>
-                    <input type="checkbox" checked />
+                    <input
+                      type="checkbox"
+                      defaultChecked={true}
+                      onChange={handleKeepPrivate}
+                      disabled={toggleKeepPrivate.isPending}
+                    />
                   </div>
                 </div>
               </picture>
@@ -131,7 +148,6 @@ export default function GenerateForm() {
 /* TODO: 
   - Inputs shape, style, number
   - styles of square inputs of 'style' 'shape' to know how it would look like
-  - communityIcons page, 'share with community' --> keepPrivate column
   - cache on server communityIcons page icons
   - nr of credits in generateForm
   - use a new s3 bucket and local postgres database in development

@@ -77,7 +77,7 @@ export default function HeaderContent({
   }, [query]);
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex max-w-[1440px] items-center justify-between 2xl:mx-auto">
       <aside className="flex items-center gap-6">
         <PrimaryLink
           href="/"
