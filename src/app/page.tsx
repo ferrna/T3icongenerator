@@ -28,7 +28,7 @@ const HeroContent = () => {
 };
 export default async function Home() {
   return (
-    <main className="container mx-auto flex flex-col items-center justify-center">
+    <main className="mb-5 container mx-auto flex flex-col items-center justify-center">
       <HeroContent />
     </main>
   );

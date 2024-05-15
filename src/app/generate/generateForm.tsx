@@ -27,7 +27,8 @@ export default function GenerateForm() {
     e.preventDefault();
     generateIcon.mutate({ prompt: form.prompt, color: form.color });
   }
-  const handleDownload = () => {
+  const handleDownload = (e: React.FormEvent) => {
+    e.preventDefault();
     const element = document.createElement("a");
     element.href = `data:image/png;base64,${imageUrl ?? ""}`;
     element.download = `image_${form.prompt}.png`;
@@ -70,30 +71,48 @@ export default function GenerateForm() {
             />
           ) : (
             imageUrl && (
-              <picture className="relative mx-auto mt-8">
-                <Image
-                  src={`data:image/png;base64,${imageUrl}`}
-                  alt="generated-icon-image"
-                  className="peer mx-auto animate-fade transition-all rounded-lg shadow-sm"
-                  width={200}
-                  height={200}
-                />
-                <div
-                  className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex
-                   w-max h-max rounded-full flex-col items-center justify-center gap-1 transition-all
-                 hover:bg-slate-600/70 peer-hover:bg-slate-600/70 p-4
-                peer-hover:*:inline-block"
-                >
-                  <Button
-                    title="Download Icon"
-                    className="hidden w-auto group-hover:inline-block"
-                    onClick={handleDownload}
+              <picture className="mt-8">
+                <div className="relative mx-auto w-max">
+                  <Image
+                    src={`data:image/png;base64,${imageUrl}`}
+                    alt="generated-icon-image"
+                    className="peer mx-auto animate-fade rounded-lg shadow-sm transition-all"
+                    width={200}
+                    height={200}
+                  />
+                  <div
+                    className="z-15 group absolute inset-x-0 inset-y-0 m-auto hidden h-max w-max
+                   flex-col items-center justify-center gap-1 rounded-full p-4 transition-all hover:animate-buttonFade
+                 hover:bg-slate-600/70 peer-hover:bg-slate-600/70 peer-hover:*:inline-block
+                md:flex"
                   >
-                    <DownloadIcon width={40} height={40} />
-                  </Button>
-                  <p className="text-white hidden w-auto group-hover:inline-block pointer-events-none">
-                    Download icon
-                  </p>
+                    <Button
+                      title="Download Icon"
+                      className="hidden w-auto group-hover:inline-block"
+                      onClick={handleDownload}
+                    >
+                      <DownloadIcon width={40} height={40} />
+                    </Button>
+                    <p className="pointer-events-none hidden w-auto text-white group-hover:inline-block">
+                      Download icon
+                    </p>
+                  </div>
+                </div>
+                <div className="mx-auto mt-4 flex flex-col items-center gap-8 p-8">
+                  <div className="flex w-full flex-col items-center justify-center gap-2 md:hidden">
+                    <Button
+                      title="Download Icon"
+                      className="w-auto"
+                      onClick={handleDownload}
+                    >
+                      <DownloadIcon width={20} height={20} />
+                    </Button>
+                    <p className="w-auto">Download icon</p>
+                  </div>
+                  <div className="flex flex-col-reverse justify-between gap-2 text-gray-700 md:flex-row md:gap-12 dark:text-[#d6d6d6]">
+                    <span>Share with community</span>
+                    <input type="checkbox" checked />
+                  </div>
                 </div>
               </picture>
             )
@@ -108,6 +127,22 @@ export default function GenerateForm() {
     </>
   );
 }
+
+/* TODO: 
+  - Inputs shape, style, number
+  - styles of square inputs of 'style' 'shape' to know how it would look like
+  - communityIcons page, 'share with community' --> keepPrivate column
+  - cache on server communityIcons page icons
+  - nr of credits in generateForm
+  - use a new s3 bucket and local postgres database in development
+*/
+
+/*
+  Rainbow style
+  Metallic
+  Japanese anime style
+  featuring calm colors and fine lines
+*/
 
 /* <div
                   className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex

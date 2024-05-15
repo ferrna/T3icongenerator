@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import OpenAI from "openai";
 import { env } from "~/env";
 import { image64 } from "~/app/(data)/base64image";
@@ -128,7 +128,6 @@ export const iconsRouter = createTRPCRouter({
       id: string;
       prompt: string;
       userId: string | null;
-      image64?: string | null;
       createdAt: Date;
     }[] = await ctx.db.icon.findMany({
       where: {
@@ -170,4 +169,49 @@ export const iconsRouter = createTRPCRouter({
       };
     });
   }),
+  getCommunityIcons: publicProcedure.query(async ({ ctx }) => {
+    //get icons
+    let icons: {
+      id: string;
+      prompt: string;
+      userId: string | null;
+      createdAt: Date;
+    }[] = await ctx.db.icon.findMany({
+      take: 15,
+      orderBy: {
+        createdAt: "desc"
+      },
+    });
+
+    // retrive images
+    const commands: GetObjectCommand[] = icons.map(
+      (i) =>
+        new GetObjectCommand({
+          Bucket: env.IG_AWS_BUCKET,
+          Key: i.id,
+        }),
+    );
+    const responses = await Promise.all(
+      commands.map(async (command) => {
+        const base64EncodedBody: string | undefined = await (
+          await s3_client.send(command)
+        )?.Body?.transformToString("base64");
+        if (!base64EncodedBody) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to retrieve image",
+          });
+        }
+        return base64EncodedBody;
+      }),
+    );
+
+    // return icons
+    return icons.map((i, index) => {
+      return {
+        ...i,
+        image64: responses[index],
+      };
+    });
+  })
 });

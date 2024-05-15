@@ -39,7 +39,7 @@ export const colorsInputs = ({
       ></Input>
       <label
         htmlFor={`${i.color}`}
-        className={`block h-full w-full cursor-pointer rounded ${form.color === i.color ? "opacity-100" : "opacity-80"} hover:opacity-100 ${i.twColor}`}
+        className={`block h-full w-full cursor-pointer rounded ${form.color === i.color ? "scale-100 opacity-100" : "opacity-70"} hover:opacity-100 ${i.twColor}`}
       ></label>
     </div>
   ));

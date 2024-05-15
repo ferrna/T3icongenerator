@@ -6,6 +6,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import Header from "./header";
 import Providers from "./providers";
 import BgHome from "./bgHome";
+import Footer from "./footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,12 +29,10 @@ export default function RootLayout({
       <body className={`relative font-sans antialiased ${inter.variable}`}>
         <TRPCReactProvider>
           <Providers>
-            <BgHome  />
+            <BgHome />
             <Header />
-            <div className="z-20 relative">
-            {children}
-
-            </div>
+            <div className="relative z-20">{children}</div>
+            <Footer />
           </Providers>
         </TRPCReactProvider>
       </body>
