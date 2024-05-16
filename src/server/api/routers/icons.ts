@@ -39,26 +39,28 @@ async function generateIcon(
     return [{ b64_json: image64 }, { b64_json: image64 }];
   }
   const response = await openAI_client.images.generate({
-    model: "dall-e-2",
+    model: "dall-e-3",
     prompt,
     n: numberOfIcons,
-    size: "512x512",
+    size: "1024x1024",
     response_format: "b64_json",
   });
-
+  console.log(response);
   return response.data;
 }
 
 function generateFinalPrompt(
   prompt: string,
   color = "",
+  shape = "",
   style = "",
   lines = "",
 ): string {
-  const colorPart = color ? `, featuring ${color} colors` : "";
-  const stylePart = style ? ` in ${style} style` : "";
-  const linesPart = lines ? ` and ${lines} lines` : "";
-  const finalPrompt = `an icon of ${prompt}${stylePart}${colorPart}${linesPart}`;
+  const colorPart = color ? `, featuring ${color} colors and` : "";
+  const stylePart = style ? ` a ${style} style` : "";
+  const linesPart = lines ? `, ${lines} lines` : "";
+  const shapePart = shape ? `, of a ${shape}` : "";
+  const finalPrompt = `an icon of ${prompt}, featuring ${colorPart} and in ${stylePart}${shapePart}, centered, clean, icon in the center${linesPart}. Please scale the full content to fit inside the image size of 512x512 px.`;
   return finalPrompt;
 }
 
@@ -70,6 +72,7 @@ export const iconsRouter = createTRPCRouter({
         color: z.string().optional(),
         style: z.string().optional(),
         lines: z.string().optional(),
+        shape: z.string().optional(),
         numberOfIcons: z.number().min(1).max(10),
       }),
     )
@@ -94,6 +97,7 @@ export const iconsRouter = createTRPCRouter({
       const finalPrompt = generateFinalPrompt(
         input.prompt,
         input?.color,
+        input?.shape,
         input?.style,
         input?.lines,
       );

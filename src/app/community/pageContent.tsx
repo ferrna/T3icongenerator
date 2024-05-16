@@ -68,7 +68,7 @@ function switchPromptToAction(iconsCount: number) {
               await signIn("google", { callbackUrl: "/generate" })
             }
           >
-            your first Icons!
+            your firsts Icons!
           </button>
         </p>
       );
@@ -78,7 +78,7 @@ function switchPromptToAction(iconsCount: number) {
           href="/generate"
           className="text-blue-500 dark:text-blue-300"
         >
-          your first Icons!
+          your firsts Icons!
         </PrimaryLink>
       );
     default:
@@ -87,7 +87,7 @@ function switchPromptToAction(iconsCount: number) {
           href="/generate"
           className="text-blue-500 dark:text-blue-300"
         >
-          more amazing Icons!
+          more Icons!
         </PrimaryLink>
       );
   }

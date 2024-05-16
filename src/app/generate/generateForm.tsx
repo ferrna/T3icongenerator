@@ -8,7 +8,6 @@ import { DownloadIcon, LoaderCircle } from "lucide-react";
 import { colors, colorsInputs } from "./colors";
 import Image from "next/image";
 import { styles, stylesInputs } from "./styles";
-import { UseTRPCMutationResult } from "@trpc/react-query/shared";
 
 export default function GenerateForm() {
   const [form, setForm] = useState({
@@ -70,13 +69,13 @@ export default function GenerateForm() {
         </FormGroup>
         <FormGroup>
           <label className="text-2xl">2. Pick a color</label>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
+          <div className="mx-1 mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
             {colorsInputs({ colors, updateForm, form })}
           </div>
         </FormGroup>
         <FormGroup>
-          <label className="text-2xl">3. Choose the style</label>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
+          <label className="text-2xl">3. Choose a style</label>
+          <div className="mx-1 mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
             {stylesInputs({ styles, updateForm, form })}
           </div>
         </FormGroup>
@@ -208,8 +207,10 @@ function renderImages(
 }
 
 /* TODO: 
-  - Inputs shape, style, number
-  - styles of square inputs of 'style' 'shape' to know how it would look like
+  - revalidate header-credits on form submit
+  - user scroll navigation on my-icons when open and close info,
+  show no more than 20 and a button to load more
+  - pricing page/section
   - cache on server communityIcons page icons
   - nr of credits in generateForm
   - use a new s3 bucket and local postgres database in development
@@ -223,18 +224,18 @@ function renderImages(
 */
 
 /* <div
-                  className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex
-                   w-max h-max rounded-full flex-col items-center justify-center gap-1 transition-all
-                 hover:bg-slate-500/50 peer-hover:bg-slate-500/50 p-4
-                 peer-hover:[&>*:first-child]:inline-block"
-                >
-                  <Button
-                    title="Download Icon"
-                    className="hidden w-auto after:hidden group-hover:after:inline-block group-hover:inline-block relative after:absolute after:left-1/2 after:-translate-x-1/2
-                    after:pt-4 after:text-center after:leading-tight after:text-slate-200 
-                    after:content-['Download_png']"
-                  >
-                    <DownloadIcon width={40} height={40} />
-                  </Button>
-                </div>
-              </picture> */
+    className="z-15 hover:animate-buttonFade group absolute inset-x-0 inset-y-0 m-auto flex
+     w-max h-max rounded-full flex-col items-center justify-center gap-1 transition-all
+   hover:bg-slate-500/50 peer-hover:bg-slate-500/50 p-4
+   peer-hover:[&>*:first-child]:inline-block"
+  >
+    <Button
+      title="Download Icon"
+      className="hidden w-auto after:hidden group-hover:after:inline-block group-hover:inline-block relative after:absolute after:left-1/2 after:-translate-x-1/2
+      after:pt-4 after:text-center after:leading-tight after:text-slate-200 
+      after:content-['Download_png']"
+    >
+      <DownloadIcon width={40} height={40} />
+    </Button>
+  </div>
+</picture> */
