@@ -9,7 +9,9 @@ const HeroContent = () => {
         <h1 className="text-5xl font-bold tracking-tight lg:mt-4">
           Generate Icons with a click of a button
         </h1>
-        <p className="text-2xl">Generate Icons with a click of a button</p>
+        <p className="text-2xl">
+          Craft unique and tailored icons with the power of IA.
+        </p>
         <Button className="mt-8 self-center text-lg sm:self-start md:text-base">
           <Link href="/generate">Start generating</Link>
         </Button>
@@ -18,7 +20,7 @@ const HeroContent = () => {
       <Image
         src="/landing-banner-removebg.png"
         alt="a bunch of nice looking icons"
-        className="order-first -mt-2 place-self-center rounded sm:order-last sm:place-self-start drop-shadow-behind-white dark:drop-shadow-behind-light"
+        className="order-first -mt-2 place-self-center rounded drop-shadow-behind-white sm:order-last sm:place-self-start dark:drop-shadow-behind-light"
         width={500}
         height={333}
         priority={true}
@@ -28,7 +30,7 @@ const HeroContent = () => {
 };
 export default async function Home() {
   return (
-    <main className="mb-5 container mx-auto flex flex-col items-center justify-center">
+    <main className="container mx-auto mb-5 flex flex-col items-center justify-center">
       <HeroContent />
     </main>
   );
