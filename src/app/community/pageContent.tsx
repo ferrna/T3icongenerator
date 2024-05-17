@@ -27,7 +27,10 @@ function IconInfo({ data }: { data: IconWithImage64 }) {
   };
 
   return (
-    <div className="mt-16 flex w-full items-stretch gap-4">
+    <div
+      className="mt-16 flex w-full items-stretch gap-4"
+      id="icon-info-container-co"
+    >
       <img
         src={`data:image/png;base64,${data?.image64 ?? ""}`}
         alt={data.prompt ?? ""}
@@ -129,11 +132,13 @@ export default function CommunityContent({
             onClick={() => setShowInfo({ id: icon.id })}
             className="cursor-pointer"
           >
-            <img
-              src={`data:image/png;base64,${icon?.image64 ?? ""}`}
-              alt={icon.prompt ?? ""}
-              className="w-full rounded-lg shadow-sm"
-            />
+            <a href="#icon-info-container-co">
+              <img
+                src={`data:image/png;base64,${icon?.image64 ?? ""}`}
+                alt={icon.prompt ?? ""}
+                className="w-full rounded-lg shadow-sm"
+              />
+            </a>
           </li>
         ));
       } else if (icons.length === 0) {

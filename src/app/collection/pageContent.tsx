@@ -37,7 +37,10 @@ function IconInfo({
   };
 
   return (
-    <div className="relative mt-16 flex w-full items-stretch gap-4 p-2">
+    <div
+      className="relative mt-16 flex w-full items-stretch gap-4 p-2"
+      id="icon-info-container"
+    >
       <div className="absolute right-0 top-0 flex -translate-y-1/2 items-center justify-center">
         <a
           href="#user-collection"
@@ -142,6 +145,18 @@ export default function CollectionContent() {
     e.preventDefault();
     setIconsSetN(iconsSetN + 1);
   }
+  const handleDownloadCollection = () => {
+    if (confirm("Download all my icons")) {
+      userIconsI.map((data: IconWithImage64) => {
+        const element = document.createElement("a");
+        element.href = `data:image/png;base64,${data?.image64 ?? ""}`;
+        element.download = `${data.id}.png`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      });
+    }
+  };
   return (
     <div className="flex w-full flex-col" id="user-icons">
       <ul className="grid w-full grid-cols-2 gap-2 text-lg sm:grid-cols-3 sm:gap-6 md:grid-cols-4">
@@ -151,6 +166,7 @@ export default function CollectionContent() {
               title="Download Icon"
               className="relative w-auto after:absolute after:left-1/2 after:hidden after:-translate-x-1/2 after:pt-4 after:text-center
       after:leading-tight after:text-slate-200 after:content-['Download_Collection'] hover:after:inline-block"
+              onClick={handleDownloadCollection}
             >
               <DownloadCloudIcon width={40} height={40} />
             </Button>

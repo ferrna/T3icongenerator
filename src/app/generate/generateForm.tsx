@@ -87,23 +87,30 @@ export default function GenerateForm() {
             4. How many icons do you want to generate?
           </label>
           <Input
-            inputMode="numeric"
             required
             type="number"
             min={1}
             max={10}
-            pattern="[0-9]|10"
             value={form.numberOfIcons}
             onChange={updateForm("numberOfIcons")}
           ></Input>
         </FormGroup>
-        <Button
-          type="submit"
-          disabled={generateIcon.isPending}
-          className="mt-3 w-full text-lg text-gray-200 hover:text-white"
-        >
-          {generateIcon.isPending ? "Submitting..." : "Generate"}
-        </Button>
+        <div className="w-full pt-6">
+          {parseInt(form.numberOfIcons) > 0 && (
+            <p className="-mt-5 text-center text-sm text-gray-700 dark:text-[#d6d6d6]">
+              {form.numberOfIcons}{" "}
+              {parseInt(form.numberOfIcons) === 1 ? "credit " : "credits "}
+              needed
+            </p>
+          )}
+          <Button
+            type="submit"
+            disabled={generateIcon.isPending}
+            className="mt-3 w-full text-lg text-gray-200 hover:text-white"
+          >
+            {generateIcon.isPending ? "Submitting..." : "Generate"}
+          </Button>
+        </div>
         <div className="flex min-h-56 w-full flex-col items-center justify-center gap-2">
           {generateIcon.isPending ? (
             <LoaderCircle
@@ -211,10 +218,8 @@ function renderImages(
 
 /* TODO: 
   - choose dalle-2 dalle-3
-  - collection, download all icons
   - pricing page/section
   - cache on server communityIcons page icons
-  - nr of credits in generateForm
   - use a new s3 bucket and local postgres database in development
 */
 
