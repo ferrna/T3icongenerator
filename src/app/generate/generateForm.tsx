@@ -26,6 +26,7 @@ export default function GenerateForm() {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
     };
   }
+  const utils = api.useUtils();
   const generateIcon = api.icons.generateIcon.useMutation({
     onSuccess(data: { imageUrl: string | undefined; id: string }[]) {
       setImageUrls(
@@ -35,6 +36,8 @@ export default function GenerateForm() {
         }),
       );
       data[0]?.id && setUserIconId(data[0].id);
+
+      utils.user.getCredits.invalidate(undefined, { refetchType: "all" });
     },
   });
   const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
@@ -207,7 +210,7 @@ function renderImages(
 }
 
 /* TODO: 
-  - revalidate header-credits on form submit
+  - choose dalle-2 dalle-3
   - user scroll navigation on my-icons when open and close info,
   show no more than 20 and a button to load more
   - pricing page/section

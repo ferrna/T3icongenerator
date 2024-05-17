@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
-  getCredits: protectedProcedure.mutation(async ({ ctx }) => {
+  getCredits: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
       where: {
         id: ctx.session.user.id,
@@ -40,7 +40,7 @@ export const userRouter = createTRPCRouter({
     }
 
     return {
-      userIconsCount: user._count.icons
+      userIconsCount: user._count.icons,
     };
   }),
 });

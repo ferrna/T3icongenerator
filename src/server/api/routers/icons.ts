@@ -153,67 +153,78 @@ export const iconsRouter = createTRPCRouter({
       );
       return responses;
     }),
-  getIcons: protectedProcedure.query(async ({ ctx }) => {
-    // check user
-    const user = await ctx.db.user.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-    });
-    if (!user) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "No user with that session id finded.",
-      });
-    }
-
-    // get icons
-    let icons: {
-      id: string;
-      prompt: string;
-      userId: string | null;
-      keepPrivate: boolean;
-      createdAt: Date;
-    }[] = await ctx.db.icon.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
-    if (icons.length === 0) {
-      return [];
-    }
-
-    // retrive images
-    const commands: GetObjectCommand[] = icons.map(
-      (i) =>
-        new GetObjectCommand({
-          Bucket: env.IG_AWS_BUCKET,
-          Key: i.id,
-        }),
-    );
-    const responses = await Promise.all(
-      commands.map(async (command) => {
-        const base64EncodedBody: string | undefined = await (
-          await s3_client.send(command)
-        )?.Body?.transformToString("base64");
-        if (!base64EncodedBody) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to retrieve image",
-          });
-        }
-        return base64EncodedBody;
+  getIcons: protectedProcedure
+    .input(
+      z.object({
+        iconsSetN: z.number().min(0),
       }),
-    );
+    )
+    .query(async ({ ctx, input }) => {
+      // check user
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No user with that session id finded.",
+        });
+      }
 
-    // return icons
-    return icons.map((i, index) => {
-      return {
-        ...i,
-        image64: responses[index],
-      };
-    });
-  }),
+      // get icons
+      let icons: {
+        id: string;
+        prompt: string;
+        userId: string | null;
+        keepPrivate: boolean;
+        createdAt: Date;
+      }[] = await ctx.db.icon.findMany({
+        where: {
+          userId: user.id,
+        },
+        skip: 15 * (input.iconsSetN),
+        take: 15,
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+      if (icons.length === 0) {
+        return [];
+      }
+
+      // retrive images
+      const commands: GetObjectCommand[] = icons.map(
+        (i) =>
+          new GetObjectCommand({
+            Bucket: env.IG_AWS_BUCKET,
+            Key: i.id,
+          }),
+      );
+      const responses = await Promise.all(
+        commands.map(async (command) => {
+          const base64EncodedBody: string | undefined = await (
+            await s3_client.send(command)
+          )?.Body?.transformToString("base64");
+          if (!base64EncodedBody) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to retrieve image",
+            });
+          }
+          return base64EncodedBody;
+        }),
+      );
+
+      // return icons
+      return icons.map((i, index) => {
+        return {
+          ...i,
+          image64: responses[index],
+        };
+      });
+    }),
   getCommunityIcons: publicProcedure.query(async ({ ctx }) => {
     //get icons
     let icons: {

@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { unstable_noStore } from "next/cache";
 import { Session } from "node_modules/next-auth/core/types";
+import { api } from "~/trpc/react";
 
 function DropdownUserListItem(
   props: React.ComponentPropsWithoutRef<"li"> & { href?: string },
@@ -60,11 +61,15 @@ function DropdownUser({ showDropdown }: { showDropdown: boolean }) {
 
 export default function HeaderContent({
   sessionUser,
-  userCredits,
 }: {
   sessionUser?: Session["user"];
-  userCredits?: number;
 }) {
+  const { data: getCredits, error = "" } = sessionUser
+    ? api.user.getCredits.useQuery(undefined, {
+        refetchInterval: 50000,
+      })
+    : { data: { credits: 2 } };
+  const userCredits = getCredits?.credits;
   const isLoggedIn = !!sessionUser;
   const { buyCredits } = useBuyCredits({
     subscriptionType: SubscriptionType.Normal,
@@ -107,7 +112,7 @@ export default function HeaderContent({
         </ul>
       </aside>
       <aside className="flex items-center gap-4">
-        {isLoggedIn && !Number.isNaN(userCredits) && (
+        {isLoggedIn && userCredits && !Number.isNaN(userCredits) && (
           <span className="flex items-center gap-1 text-sm text-gray-700 dark:text-[#d6d6d6]">
             <RefreshCwIcon size={18} strokeWidth={1.25} />
             {userCredits} credits left
