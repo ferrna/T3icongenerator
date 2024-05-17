@@ -211,8 +211,7 @@ function renderImages(
 
 /* TODO: 
   - choose dalle-2 dalle-3
-  - user scroll navigation on my-icons when open and close info,
-  show no more than 20 and a button to load more
+  - collection, download all icons
   - pricing page/section
   - cache on server communityIcons page icons
   - nr of credits in generateForm

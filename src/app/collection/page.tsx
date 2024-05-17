@@ -15,7 +15,9 @@ export default async function Collection() {
       className="container relative z-20 m-auto mb-24
     flex min-h-96 max-w-screen-md flex-col gap-8 px-4 py-8 md:px-8 md:py-10"
     >
-      <h2 className="text-4xl font-bold">Collection</h2>
+      <h2 className="text-4xl font-bold" id="user-collection">
+        Collection
+      </h2>
       <p className="-mt-4 text-lg">Your collection of beautiful icons</p>
       <CollectionContent />
     </main>

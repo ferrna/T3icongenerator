@@ -172,7 +172,7 @@ export const iconsRouter = createTRPCRouter({
           message: "No user with that session id finded.",
         });
       }
-
+      
       // get icons
       let icons: {
         id: string;
@@ -184,8 +184,8 @@ export const iconsRouter = createTRPCRouter({
         where: {
           userId: user.id,
         },
-        skip: 15 * (input.iconsSetN),
-        take: 15,
+        skip: 12 * (input.iconsSetN),
+        take: 12,
         orderBy: {
           createdAt: 'desc'
         }
@@ -234,7 +234,7 @@ export const iconsRouter = createTRPCRouter({
       keepPrivate: boolean;
       createdAt: Date;
     }[] = await ctx.db.icon.findMany({
-      take: 15,
+      take: 20,
       orderBy: {
         createdAt: "desc",
       },
