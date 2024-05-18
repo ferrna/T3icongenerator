@@ -1,7 +1,7 @@
 "use server";
 
-import { api } from "~/trpc/server";
-import { getServerAuthSession } from "~/server/auth";
+//import { api } from "~/trpc/server";
+//import { getServerAuthSession } from "~/server/auth";
 
 export async function generateIconAction(prompt: string, color = "") {
   /* const session = await getServerAuthSession();

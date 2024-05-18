@@ -139,7 +139,7 @@ export const iconsRouter = createTRPCRouter({
           await s3_client.send(
             new PutObjectCommand({
               Bucket: env.IG_AWS_BUCKET,
-              Body: Buffer.from(image.b64_json as string, "base64"),
+              Body: Buffer.from(image.b64_json!, "base64"),
               Key: `${dbIcon.id}`,
               ContentType: "image/gif",
               ContentEncoding: "base64",
@@ -172,9 +172,9 @@ export const iconsRouter = createTRPCRouter({
           message: "No user with that session id finded.",
         });
       }
-      
+
       // get icons
-      let icons: {
+      const icons: {
         id: string;
         prompt: string;
         userId: string | null;
@@ -184,11 +184,11 @@ export const iconsRouter = createTRPCRouter({
         where: {
           userId: user.id,
         },
-        skip: 12 * (input.iconsSetN),
+        skip: 12 * input.iconsSetN,
         take: 12,
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: "desc",
+        },
       });
       if (icons.length === 0) {
         return [];
@@ -227,7 +227,7 @@ export const iconsRouter = createTRPCRouter({
     }),
   getCommunityIcons: publicProcedure.query(async ({ ctx }) => {
     //get icons
-    let icons: {
+    const icons: {
       id: string;
       prompt: string;
       userId: string | null;

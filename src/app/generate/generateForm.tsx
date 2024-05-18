@@ -28,7 +28,7 @@ export default function GenerateForm() {
   }
   const utils = api.useUtils();
   const generateIcon = api.icons.generateIcon.useMutation({
-    onSuccess(data: { imageUrl: string | undefined; id: string }[]) {
+    onSuccess(data: { imageUrl: string | undefined; id: string }[]): void {
       setImageUrls(
         data.map((i) => {
           if (!i.imageUrl) return;
@@ -41,9 +41,9 @@ export default function GenerateForm() {
     },
   });
   const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
-    onSuccess(data: any) {
+    onSuccess() {
       /* todo: agregar toast */
-      console.log("mutation finished", data);
+      console.log("mutation finished");
     },
   });
   async function handleSubmit(e: React.FormEvent) {
@@ -141,6 +141,7 @@ function renderImages(
   imageUrls: (string | undefined)[],
   userIconId: string | null,
   prompt: string,
+  //@ts-nocheck
   toggleKeepPrivate: any,
 ) {
   const handleDownload = (
@@ -166,8 +167,8 @@ function renderImages(
   return (
     <picture className="mt-8 max-w-full">
       <div className="mx-auto flex w-max max-w-full flex-col flex-wrap items-center justify-center gap-6 sm:flex-row">
-        {imageUrls.map((imageUrl) => (
-          <div className="relative w-max">
+        {imageUrls.map((imageUrl, idx) => (
+          <div className="relative w-max" key={idx + "imagesResult"}>
             <Image
               src={`data:image/png;base64,${imageUrl}`}
               alt="generated-icon-image"

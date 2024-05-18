@@ -64,8 +64,8 @@ export default function PrivacyPolicyPage() {
         <h2>5. Changes to This Privacy Policy</h2>
         <p>
           We reserve the right to update our Privacy Policy from time to time.
-          Any changes will be posted on this page, and the "last updated" date
-          will be revised accordingly.
+          Any changes will be posted on this page, and the &quot;last
+          updated&quot; date will be revised accordingly.
         </p>
       </section>
       <section>

@@ -24,9 +24,10 @@ function IconInfo({
   data,
   setShowInfo,
 }: {
-  data: IconWithImage64;
+  data: IconWithImage64 | null;
   setShowInfo: React.Dispatch<React.SetStateAction<{ id: string | null }>>;
 }) {
+  if (data === null) return;
   const handleDownload = () => {
     const element = document.createElement("a");
     element.href = `data:image/png;base64,${data?.image64 ?? ""}`;
@@ -82,7 +83,9 @@ function IconInfo({
 
 export default function CollectionContent() {
   const [showInfo, setShowInfo] = useState<{ id: string | null }>({ id: null });
-  const [userIconsI, setUserIcons] = useState<any>(null);
+  const [userIconsI, setUserIcons] = useState<
+    typeof userIcons | undefined | null
+  >(null);
 
   const [iconsSetN, setIconsSetN] = useState<number>(0);
   const {
@@ -147,7 +150,7 @@ export default function CollectionContent() {
   }
   const handleDownloadCollection = () => {
     if (confirm("Download all my icons")) {
-      userIconsI.map((data: IconWithImage64) => {
+      userIconsI?.map((data: IconWithImage64) => {
         const element = document.createElement("a");
         element.href = `data:image/png;base64,${data?.image64 ?? ""}`;
         element.download = `${data.id}.png`;
@@ -172,7 +175,7 @@ export default function CollectionContent() {
             </Button>
           </li>
         )}
-        {renderIcons(userIconsI)}
+        {renderIcons(userIconsI ?? [])}
         {renderQueryState()}
       </ul>
       {userIconsI && (
@@ -200,7 +203,7 @@ export default function CollectionContent() {
           data={
             userIconsI?.find(
               (i: (typeof userIconsI)[0]) => i.id === showInfo.id,
-            )!
+            ) ?? null
           }
           setShowInfo={setShowInfo}
         />

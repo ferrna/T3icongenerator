@@ -16,7 +16,8 @@ interface IconWithImage64 extends Icon {
   createdAt: Date;
 }
 
-function IconInfo({ data }: { data: IconWithImage64 }) {
+function IconInfo({ data }: { data: IconWithImage64 | null }) {
+  if (data === null) return;
   const handleDownload = () => {
     const element = document.createElement("a");
     element.href = `data:image/png;base64,${data?.image64 ?? ""}`;
@@ -159,7 +160,7 @@ export default function CommunityContent({
         </div>
       )}
       {showInfo.id && userIcons && (
-        <IconInfo data={userIcons?.find((i) => i.id === showInfo.id)!} />
+        <IconInfo data={userIcons?.find((i) => i.id === showInfo.id) ?? null} />
       )}
     </div>
   );

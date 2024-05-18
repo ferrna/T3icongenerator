@@ -34,11 +34,11 @@ export default function TermsOfServicePage() {
       <section>
         <h2>2. Disclaimer of Liability</h2>
         <p>
-          Icon Generator IA provides its services on an "as-is" basis. We do not
-          guarantee uninterrupted access to our services or the accuracy of
-          generated icons. Icon Generator IA shall not be held liable for any
-          direct, indirect, incidental, special, or consequential damages
-          arising out of the use or inability to use our services.
+          Icon Generator IA provides its services on an &quot;as-is&quot; basis.
+          We do not guarantee uninterrupted access to our services or the
+          accuracy of generated icons. Icon Generator IA shall not be held
+          liable for any direct, indirect, incidental, special, or consequential
+          damages arising out of the use or inability to use our services.
         </p>
       </section>
       <section>
