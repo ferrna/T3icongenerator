@@ -1,3 +1,5 @@
+import { PrimaryLink } from "~/app/_components/PrimaryLink";
+
 export const metadata = {
   title: "Terms of Service",
   description: "Terms of Service for Icon Generator IA",
@@ -9,7 +11,17 @@ export default function TermsOfServicePage() {
       className="container m-auto mb-24
     flex max-w-screen-md flex-col gap-6 px-4 py-8 md:px-8 md:py-10"
     >
-      <h1>Terms of Service</h1>
+      <p className="relative">
+        <PrimaryLink
+          className="absolute right-full w-[max-content] pr-12 text-gray-100"
+          href="/info"
+        >
+          {"< Info"}
+        </PrimaryLink>
+
+        <h1>Terms of Service</h1>
+        <span className="text-sm text-gray-400">Last updated: 18/05/2024</span>
+      </p>
       <section>
         <h2>1. Acceptance of Terms</h2>
         <p>

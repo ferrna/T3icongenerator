@@ -31,7 +31,7 @@ export default function RootLayout({
           <Providers>
             <BgHome />
             <Header />
-            <div className="relative z-20">{children}</div>
+            <div className="relative z-20 pt-[73px]">{children}</div>
             <Footer />
           </Providers>
         </TRPCReactProvider>

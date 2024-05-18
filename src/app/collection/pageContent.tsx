@@ -163,9 +163,9 @@ export default function CollectionContent() {
         {userIconsI && (
           <li className="flex items-center justify-center">
             <Button
-              title="Download Icon"
+              title="Download Collection"
               className="relative w-auto after:absolute after:left-1/2 after:hidden after:-translate-x-1/2 after:pt-4 after:text-center
-      after:leading-tight after:text-slate-200 after:content-['Download_Collection'] hover:after:inline-block"
+      after:leading-tight after:text-gray-700 after:content-['Download_Collection'] hover:after:inline-block dark:after:text-slate-200"
               onClick={handleDownloadCollection}
             >
               <DownloadCloudIcon width={40} height={40} />

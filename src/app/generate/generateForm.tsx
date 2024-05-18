@@ -68,7 +68,11 @@ export default function GenerateForm() {
           <label className="text-2xl">
             1. Describe what you want to generate
           </label>
-          <Input value={form.prompt} onChange={updateForm("prompt")}></Input>
+          <Input
+            required
+            value={form.prompt}
+            onChange={updateForm("prompt")}
+          ></Input>
         </FormGroup>
         <FormGroup>
           <label className="text-2xl">2. Pick a color</label>
