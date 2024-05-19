@@ -28,7 +28,7 @@ export default function GenerateForm() {
   }
   const utils = api.useUtils();
   const generateIcon = api.icons.generateIcon.useMutation({
-    onSuccess(data: { imageUrl: string | undefined; id: string }[]): void {
+    onSuccess(data: { imageUrl: string | undefined; id: string }[]) {
       setImageUrls(
         data.map((i) => {
           if (!i.imageUrl) return;
@@ -37,15 +37,10 @@ export default function GenerateForm() {
       );
       data[0]?.id && setUserIconId(data[0].id);
 
-      utils.user.getCredits.invalidate(undefined, { refetchType: "all" });
+      utils.user.getCredits.invalidate(undefined, { refetchType: "all" }).catch(err => console.log(err));
     },
   });
-  const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
-    onSuccess() {
-      /* todo: agregar toast */
-      console.log("mutation finished");
-    },
-  });
+  
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     console.log(form);
@@ -124,7 +119,7 @@ export default function GenerateForm() {
             />
           ) : (
             imageUrls &&
-            renderImages(imageUrls, userIconId, form.prompt, toggleKeepPrivate)
+            renderImages(imageUrls, userIconId, form.prompt)
           )}
           {generateIcon.isError && (
             <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
@@ -141,9 +136,13 @@ function renderImages(
   imageUrls: (string | undefined)[],
   userIconId: string | null,
   prompt: string,
-  //@ts-nocheck
-  toggleKeepPrivate: any,
 ) {
+  const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
+    onSuccess() {
+      /* todo: agregar toast */
+      console.log("mutation finished");
+    },
+  });
   const handleDownload = (
     e: React.FormEvent,
     imageUrls: (string | undefined)[],
