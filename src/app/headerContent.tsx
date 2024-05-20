@@ -71,6 +71,8 @@ export default function HeaderContent({
     : { data: { credits: 2 } };
   const userCredits = getCredits?.credits;
   const isLoggedIn = !!sessionUser;
+  /* TODO: pass subscriptionType on call, and implement the hook on pricing page,
+  redirect to login and back if not logged in */
   const { buyCredits } = useBuyCredits({
     subscriptionType: SubscriptionType.Normal,
   });
@@ -118,7 +120,6 @@ export default function HeaderContent({
             {userCredits} credits left
           </span>
         )}
-        {/* TODO: redirect to login if not logged in */}
         <Button onClick={buyCredits}>Buy Credits</Button>
         {sessionUser && isLoggedIn ? (
           <div className="flex items-center gap-3">

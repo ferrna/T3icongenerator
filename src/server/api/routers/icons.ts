@@ -45,22 +45,19 @@ async function generateIcon(
     size: "1024x1024",
     response_format: "b64_json",
   });
-  console.log(response);
+  console.log(response.data[0]?.revised_prompt);
   return response.data;
 }
 
 function generateFinalPrompt(
   prompt: string,
   color = "",
-  shape = "",
-  style = "",
-  lines = "",
+  style = "normal",
+  lines = "fine",
 ): string {
-  const colorPart = color ? `, featuring ${color} colors and` : "";
-  const stylePart = style ? ` a ${style} style` : "";
-  const linesPart = lines ? `, ${lines} lines` : "";
-  const shapePart = shape ? `, of a ${shape}` : "";
-  const finalPrompt = `an icon of ${prompt}, featuring ${colorPart} and in ${stylePart}${shapePart}, centered, clean, icon in the center${linesPart}. Please scale the full content to fit inside the image size of 512x512 px.`;
+  const linesColorsPart = color ? `, featuring ${color} colors` + (lines ? ` and ${lines} lines` : "") : "";
+  const stylePart = style ? `${style} style` : "";
+  const finalPrompt = `a modern icon of ${prompt}, in ${stylePart}, centered, clean${linesColorsPart}. Could be any shape, circle, square, box, etc. Please scale the full content to fit inside the image size of 1024x1024 px.`;
   return finalPrompt;
 }
 
@@ -72,7 +69,6 @@ export const iconsRouter = createTRPCRouter({
         color: z.string().optional(),
         style: z.string().optional(),
         lines: z.string().optional(),
-        shape: z.string().optional(),
         numberOfIcons: z.number().min(1).max(10),
       }),
     )
@@ -97,7 +93,6 @@ export const iconsRouter = createTRPCRouter({
       const finalPrompt = generateFinalPrompt(
         input.prompt,
         input?.color,
-        input?.shape,
         input?.style,
         input?.lines,
       );
@@ -286,7 +281,7 @@ export const iconsRouter = createTRPCRouter({
           message: "No icon with that id finded.",
         });
       }
-      //toggle keep private ('share with community')
+      //toggle keepPrivate ( = 'share with community')
       return await ctx.db.icon.update({
         where: {
           id: input.id,

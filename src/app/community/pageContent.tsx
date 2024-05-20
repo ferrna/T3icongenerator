@@ -40,7 +40,7 @@ function IconInfo({ data }: { data: IconWithImage64 | null }) {
         className="rounded-lg shadow-sm"
       />
       <div className="relative flex flex-col items-center justify-center">
-        <div className="absolute inset-x-0 inset-y-0 flex items-center">
+        <div className="absolute inset-x-0 inset-y-0 -z-10 flex items-center">
           <img
             src="/quotation-marks.png"
             alt="quotation-marks png"

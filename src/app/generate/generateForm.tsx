@@ -42,6 +42,16 @@ export default function GenerateForm() {
         .catch((err) => console.log(err));
     },
   });
+  //here
+  const { mutate, isPending: toggleKeepPrivateIsPending } =
+    api.icons.postToggleKeepPrivate.useMutation({
+      onSuccess() {
+        console.log("mutation finished");
+      },
+    });
+  const helperToggleKeepPrivate = (id: string) => {
+    mutate({ id });
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -120,7 +130,14 @@ export default function GenerateForm() {
               className="mx-auto mt-6 animate-spin"
             />
           ) : (
-            imageUrls && renderImages(imageUrls, userIconId, form.prompt)
+            imageUrls &&
+            renderImages(
+              imageUrls,
+              userIconId,
+              form.prompt,
+              helperToggleKeepPrivate,
+              toggleKeepPrivateIsPending,
+            )
           )}
           {generateIcon.isError && (
             <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
@@ -137,13 +154,11 @@ function renderImages(
   imageUrls: (string | undefined)[],
   userIconId: string | null,
   prompt: string,
+  helperToggleKeepPrivate: (id: string) => void,
+  toggleKeepPrivateIsPending: boolean,
 ) {
-  const toggleKeepPrivate = api.icons.postToggleKeepPrivate.useMutation({
-    onSuccess() {
-      /* todo: agregar toast */
-      console.log("mutation finished");
-    },
-  });
+  //here
+
   const handleDownload = (
     e: React.FormEvent,
     imageUrls: (string | undefined)[],
@@ -162,7 +177,7 @@ function renderImages(
 
   const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.value = e.target.value === "on" ? "off" : "on";
-    toggleKeepPrivate.mutate({ id: userIconId! });
+    helperToggleKeepPrivate(userIconId!);
   };
   return (
     <picture className="mt-8 max-w-full">
@@ -213,7 +228,7 @@ function renderImages(
             type="checkbox"
             defaultChecked={true}
             onChange={handleKeepPrivate}
-            disabled={toggleKeepPrivate.isPending}
+            disabled={toggleKeepPrivateIsPending}
           />
         </div>
       </div>
@@ -222,14 +237,13 @@ function renderImages(
 }
 
 /* TODO: 
+  - save the revised_prompt, and 'use prompt in my icons'
   - choose dalle-2 dalle-3
   - cache on server communityIcons page icons
   - use a new s3 bucket and local postgres database in development
 */
 
 /*
-  Rainbow style
-  Metallic
   Japanese anime style
   featuring calm colors and fine lines
 */
