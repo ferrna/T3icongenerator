@@ -37,10 +37,12 @@ export default function GenerateForm() {
       );
       data[0]?.id && setUserIconId(data[0].id);
 
-      utils.user.getCredits.invalidate(undefined, { refetchType: "all" }).catch(err => console.log(err));
+      utils.user.getCredits
+        .invalidate(undefined, { refetchType: "all" })
+        .catch((err) => console.log(err));
     },
   });
-  
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     console.log(form);
@@ -118,8 +120,7 @@ export default function GenerateForm() {
               className="mx-auto mt-6 animate-spin"
             />
           ) : (
-            imageUrls &&
-            renderImages(imageUrls, userIconId, form.prompt)
+            imageUrls && renderImages(imageUrls, userIconId, form.prompt)
           )}
           {generateIcon.isError && (
             <p className="w-full border-[1px] border-red-400 bg-red-100 p-4 text-center text-red-400">
@@ -222,7 +223,6 @@ function renderImages(
 
 /* TODO: 
   - choose dalle-2 dalle-3
-  - pricing page/section
   - cache on server communityIcons page icons
   - use a new s3 bucket and local postgres database in development
 */
