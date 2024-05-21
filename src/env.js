@@ -32,6 +32,7 @@ export const env = createEnv({
     IG_AWS_BUCKET: z.string(),
     STRIPE_API_SECRET: z.string(),
     PRICE_ID: z.string(),
+    PRICE_ID_Pro: z.string(),
     HOST_URL: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
   },
@@ -66,6 +67,7 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_API_KEY: process.env.NEXT_PUBLIC_STRIPE_API_KEY,
     STRIPE_API_SECRET: process.env.STRIPE_API_SECRET,
     PRICE_ID: process.env.PRICE_ID,
+    PRICE_ID_Pro: process.env.PRICE_ID_Pro,
     HOST_URL: process.env.HOST_URL,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET
   },

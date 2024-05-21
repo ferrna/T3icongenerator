@@ -9,11 +9,13 @@ export const checkoutRouter = createTRPCRouter({
   generatePaymentPage: protectedProcedure
     .input(z.object({ subscriptionType: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
+      const priceId =
+        input.subscriptionType === "pro" ? env.PRICE_ID_Pro : env.PRICE_ID;
       return stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
           {
-            price: env.PRICE_ID,
+            price: priceId,
             quantity: 1,
           },
         ],

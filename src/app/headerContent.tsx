@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { unstable_noStore } from "next/cache";
 import { Session } from "node_modules/next-auth/core/types";
 import { api } from "~/trpc/react";
+import Link from "next/link";
 
 function DropdownUserListItem(
   props: React.ComponentPropsWithoutRef<"li"> & { href?: string },
@@ -64,20 +65,16 @@ export default function HeaderContent({
 }: {
   sessionUser?: Session["user"];
 }) {
-  const { data: getCredits, error = "" } = sessionUser
+  const { data: getCredits } = sessionUser
     ? api.user.getCredits.useQuery(undefined, {
         refetchInterval: 50000,
       })
     : { data: { credits: 2 } };
-  const userCredits = getCredits?.credits;
-  const isLoggedIn = !!sessionUser;
-  /* TODO: pass subscriptionType on call, and implement the hook on pricing page,
-  redirect to login and back if not logged in */
-  const { buyCredits } = useBuyCredits({
-    subscriptionType: SubscriptionType.Normal,
-  });
   const [showDropdown, setShowDropdown] = React.useState<boolean>(false);
   const query = usePathname();
+
+  const userCredits = getCredits?.credits;
+  const isLoggedIn = !!sessionUser;
 
   React.useEffect(() => {
     setShowDropdown(false);
@@ -120,7 +117,9 @@ export default function HeaderContent({
             {userCredits} credits left
           </span>
         )}
-        <Button onClick={buyCredits}>Buy Credits</Button>
+        <Link href="/pricing">
+          <Button>Buy Credits</Button>
+        </Link>
         {sessionUser && isLoggedIn ? (
           <div className="flex items-center gap-3">
             <div
