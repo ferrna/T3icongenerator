@@ -1,7 +1,6 @@
 "use client";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
-import { SubscriptionType, useBuyCredits } from "./(hooks)/useBuyCredits";
 import { Button } from "./_components/Button";
 import { PrimaryLink } from "./_components/PrimaryLink";
 import { RefreshCwIcon } from "lucide-react";

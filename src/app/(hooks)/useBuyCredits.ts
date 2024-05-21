@@ -11,17 +11,18 @@ export enum SubscriptionType {
   Normal = "normal",
   Pro = "pro",
 }
-export function useBuyCredits({
-  subscriptionType,
-}: {
-  subscriptionType: SubscriptionType;
-}) {
+export function useBuyCredits() {
   const checkout = api.checkout.generatePaymentPage.useMutation();
   const session = useSession();
+
   return {
-    buyCredits: async (): Promise<void> => {
+    buyCredits: async ({
+      subscriptionType,
+    }: {
+      subscriptionType: SubscriptionType;
+    }): Promise<void> => {
       if (!session.data) {
-        await signIn();
+        await signIn("google", { callbackUrl: "/pricing" });
         return;
       }
       const response = await checkout.mutateAsync({ subscriptionType });

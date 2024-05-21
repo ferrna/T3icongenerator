@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 
-export default function BgHome() {
+export default function LayoutBg() {
   const query = usePathname();
   return (
     <div

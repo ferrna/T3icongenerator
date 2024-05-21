@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import Header from "./header";
 import Providers from "./providers";
-import BgHome from "./bgHome";
+import LayoutBg from "./layoutBg";
 import Footer from "./footer";
 
 const inter = Inter({
@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className={`relative font-sans antialiased ${inter.variable}`}>
         <TRPCReactProvider>
           <Providers>
-            <BgHome />
+            <LayoutBg />
             <Header />
             <div className="relative z-20 pt-[73px]">{children}</div>
             <Footer />

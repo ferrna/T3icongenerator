@@ -42,7 +42,7 @@ export default function GenerateForm() {
         .catch((err) => console.log(err));
     },
   });
-  //here
+
   const { mutate, isPending: toggleKeepPrivateIsPending } =
     api.icons.postToggleKeepPrivate.useMutation({
       onSuccess() {
@@ -157,8 +157,6 @@ function renderImages(
   helperToggleKeepPrivate: (id: string) => void,
   toggleKeepPrivateIsPending: boolean,
 ) {
-  //here
-
   const handleDownload = (
     e: React.FormEvent,
     imageUrls: (string | undefined)[],
@@ -237,15 +235,12 @@ function renderImages(
 }
 
 /* TODO: 
-  - save the revised_prompt, and 'use prompt in my icons'
-  - choose dalle-2 dalle-3
+  - choose two or three colors
+  - 're-use prompt in my icons'
+  - stripe production keys
+  - choose dalle-2 dalle-3, and manage credits used by each
   - cache on server communityIcons page icons
   - use a new s3 bucket and local postgres database in development
-*/
-
-/*
-  Japanese anime style
-  featuring calm colors and fine lines
 */
 
 /* <div
