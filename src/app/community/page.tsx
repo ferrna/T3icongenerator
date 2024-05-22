@@ -11,10 +11,15 @@ export const metadata = {
 };
 
 export default async function Collection() {
-  const session = await getServerAuthSession();
-  const getUserHaveIcons = session
-    ? await api.user.getUserHaveIcons()
-    : { userIconsCount: -1 };
+  async function getUserIconsCount() {
+    const session = await getServerAuthSession();
+    const userIconsCount = session
+      ? await api.user.getUserHaveIcons()
+      : { userIconsCount: -1 };
+    return userIconsCount;
+  }
+  const { userIconsCount } = await getUserIconsCount();
+
   return (
     <main
       className="container relative z-20 m-auto mb-24
@@ -22,7 +27,7 @@ export default async function Collection() {
     >
       <h2 className="text-4xl font-bold">Community icons</h2>
       <p className="-mt-4 text-lg"></p>
-      <CommunityContent userIconsCount={getUserHaveIcons.userIconsCount} />
+      {userIconsCount && <CommunityContent userIconsCount={userIconsCount} />}
     </main>
   );
 }

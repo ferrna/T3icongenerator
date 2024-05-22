@@ -14,19 +14,29 @@ const iconsPerRequest = 12;
 
 interface IconWithImage64 extends Icon {
   image64: string | undefined;
-  id: string;
-  prompt: string;
-  userId: string | null;
-  createdAt: Date;
 }
 
 function IconInfo({
   data,
   setShowInfo,
+  isPrivate,
+  setIsPrivate,
+  helperToggleKeepPrivate,
+  toggleKeepPrivateIsPending,
 }: {
   data: IconWithImage64 | null;
   setShowInfo: React.Dispatch<React.SetStateAction<{ id: string | null }>>;
+  isPrivate: boolean;
+  setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
+  helperToggleKeepPrivate: (id: string) => void;
+  toggleKeepPrivateIsPending: boolean;
 }) {
+  useEffect(() => {
+    if (data) {
+      setIsPrivate(!data.keepPrivate);
+    }
+  }, [data]);
+
   if (data === null) return;
   const handleDownload = () => {
     const element = document.createElement("a");
@@ -35,6 +45,11 @@ function IconInfo({
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  };
+
+  const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    helperToggleKeepPrivate(data.id!);
+    setIsPrivate(!isPrivate);
   };
 
   return (
@@ -56,7 +71,7 @@ function IconInfo({
         alt={data.prompt ?? ""}
         width={160}
         height={160}
-        className="rounded-lg shadow-sm"
+        className="aspect-square self-center rounded-lg shadow-sm"
       />
       <div className="relative flex flex-col items-center justify-center">
         <div className="absolute inset-x-0 inset-y-0 -z-10 flex items-center">
@@ -67,7 +82,18 @@ function IconInfo({
             width={60}
           />
         </div>
-        <p className="-mt-1 px-6 text-lg italic">{data.prompt}</p>
+        <div className="-mt-1 px-6 text-lg italic">
+          <p>{data.prompt}</p>
+          <div className="flex justify-center pt-2 text-base text-gray-700 md:gap-12 dark:text-[#d6d6d6]">
+            <span>Share with community</span>
+            <input
+              type="checkbox"
+              checked={isPrivate}
+              onChange={handleKeepPrivate}
+              disabled={toggleKeepPrivateIsPending}
+            />
+          </div>
+        </div>
       </div>
       <div className="flex flex-col items-center justify-center">
         <Button
@@ -86,19 +112,32 @@ export default function CollectionContent() {
   const [userIconsI, setUserIcons] = useState<
     typeof userIcons | undefined | null
   >(null);
-
   const [iconsSetN, setIconsSetN] = useState<number>(0);
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  const showMoreButtonRef = useRef<HTMLButtonElement>(null);
+
   const {
     isPending,
     isError,
     data: userIcons,
     error,
   } = api.icons.getIcons.useQuery({ iconsSetN });
-  const showMoreButtonRef = useRef<HTMLButtonElement>(null);
+
+  const { mutate, isPending: toggleKeepPrivateIsPending } =
+    api.icons.postToggleKeepPrivate.useMutation({
+      onSuccess() {
+        console.log("mutation finished");
+      },
+    });
+  const helperToggleKeepPrivate = (id: string) => {
+    mutate({ id });
+  };
+
   useEffect(() => {
-    // isPending === false &&
-    userIcons && setUserIcons([...(userIconsI ?? []), ...userIcons]);
-    console.log("here");
+    isPending === false &&
+      userIcons &&
+      setUserIcons([...(userIconsI ?? []), ...userIcons]);
     if (userIcons && userIcons.length < iconsPerRequest) {
       showMoreButtonRef.current?.classList.add("hidden");
     }
@@ -207,6 +246,10 @@ export default function CollectionContent() {
             ) ?? null
           }
           setShowInfo={setShowInfo}
+          isPrivate={isPrivate}
+          setIsPrivate={setIsPrivate}
+          helperToggleKeepPrivate={helperToggleKeepPrivate}
+          toggleKeepPrivateIsPending={toggleKeepPrivateIsPending}
         />
       )}
     </div>

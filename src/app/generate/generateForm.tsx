@@ -12,7 +12,7 @@ import { styles, stylesInputs } from "./styles";
 export default function GenerateForm() {
   const [form, setForm] = useState({
     prompt: "",
-    color: "",
+    colors: [] as string[],
     style: "",
     lines: "",
     numberOfIcons: "1",
@@ -25,6 +25,20 @@ export default function GenerateForm() {
     return function (e: React.ChangeEvent<HTMLInputElement>) {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
     };
+  }
+  function updateFormColors(e: React.ChangeEvent<HTMLInputElement>) {
+    if (form.colors.includes(e.target.value)) {
+      setForm((prev) => ({
+        ...prev,
+        colors: prev.colors.filter((color) => color !== e.target.value),
+      }));
+    } else {
+      if (form.colors.length === 4) return;
+      setForm((prev) => ({
+        ...prev,
+        colors: [...prev.colors, e.target.value],
+      }));
+    }
   }
   const utils = api.useUtils();
   const generateIcon = api.icons.generateIcon.useMutation({
@@ -58,7 +72,7 @@ export default function GenerateForm() {
     console.log(form);
     generateIcon.mutate({
       prompt: form.prompt,
-      color: form.color,
+      colors: form.colors,
       style: form.style,
       lines: form.lines,
       numberOfIcons: parseInt(form.numberOfIcons),
@@ -84,7 +98,7 @@ export default function GenerateForm() {
         <FormGroup>
           <label className="text-2xl">2. Pick a color</label>
           <div className="mx-1 mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-5">
-            {colorsInputs({ colors, updateForm, form })}
+            {colorsInputs({ colors, updateFormColors, form })}
           </div>
         </FormGroup>
         <FormGroup>
@@ -235,8 +249,7 @@ function renderImages(
 }
 
 /* TODO: 
-  - choose two or three colors
-  - 're-use prompt in my icons'
+  - responsivity of landingpage, my-icons, header
   - stripe production keys
   - choose dalle-2 dalle-3, and manage credits used by each
   - cache on server communityIcons page icons

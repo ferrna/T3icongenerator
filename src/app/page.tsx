@@ -99,7 +99,7 @@ const ActionsSectionContent = () => {
       <article className="z-22 container mx-auto flex flex-col items-center gap-2 px-8">
         <div className="flex w-full items-center justify-center gap-4 p-8">
           {actions.map((action) => (
-            <picture className="pl-2">
+            <picture className="pl-2" key={action.title}>
               <Button
                 title="download icon"
                 className="disabled pointer-events-none h-max w-max p-1 text-white disabled:from-blue-500 disabled:to-blue-600 disabled:hover:opacity-100"
@@ -110,7 +110,10 @@ const ActionsSectionContent = () => {
           ))}
         </div>
         {actions.map((action) => (
-          <h4 className="text-bold relative text-center text-2xl text-black before:absolute before:right-full before:pr-2 before:content-['♦']">
+          <h4
+            key={action.title + "h4"}
+            className="text-bold relative text-center text-2xl text-black before:absolute before:right-full before:pr-2 before:content-['♦']"
+          >
             {action.title}
           </h4>
         ))}

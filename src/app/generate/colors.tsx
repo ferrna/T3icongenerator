@@ -19,27 +19,27 @@ export const colors = [
 
 export const colorsInputs = ({
   colors,
-  updateForm,
+  updateFormColors,
   form,
 }: {
   colors: { color: string; twColor: string }[];
-  updateForm: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void;
-  form: { color: string };
+  updateFormColors: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  form: { colors: string[] };
 }) => {
   const htmlInputs = colors.map((i) => (
     <div className="aspect-square h-full w-full" key={i.color}>
       <Input
         type="radio"
         id={`${i.color}`}
-        name="color"
+        name="colors"
         value={`${i.color}`}
         className={`${i.color} hidden`}
-        onChange={updateForm(`color`)}
-        checked={form.color === i.color}
+        onChange={updateFormColors}
+        checked={form.colors.includes(i.color)}
       ></Input>
       <label
         htmlFor={`${i.color}`}
-        className={`block h-full w-full cursor-pointer rounded ${form.color === i.color ? "scale-100 opacity-100" : "opacity-70"} hover:opacity-100 ${i.twColor}`}
+        className={`block h-full w-full cursor-pointer rounded ${form.colors.includes(i.color) ? "border-2 border-gray-900 opacity-100" : "border-none opacity-60"} hover:opacity-100 ${i.twColor}`}
       ></label>
     </div>
   ));

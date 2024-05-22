@@ -9,11 +9,6 @@ import { signIn } from "next-auth/react";
 
 interface IconWithImage64 extends Icon {
   image64: string | undefined;
-  id: string;
-  prompt: string;
-  userId: string | null;
-  keepPrivate: boolean;
-  createdAt: Date;
 }
 
 function IconInfo({ data }: { data: IconWithImage64 | null }) {

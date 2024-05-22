@@ -51,14 +51,18 @@ async function generateIcon(
 
 function generateFinalPrompt(
   prompt: string,
-  color = "",
+  colors: string[] = [],
   style = "normal",
   lines = "fine",
-): string {
-  const linesColorsPart = color ? `, featuring ${color} colors` + (lines ? ` and ${lines} lines` : "") : "";
+) {
+  const linesColorsPart = colors.length
+    ? `, featuring ${colors.reduce((sum, color) => sum + " and " + color)} colors` +
+      (lines ? ` and ${lines} lines` : "")
+    : "";
   const stylePart = style ? `${style} style` : "";
-  const finalPrompt = `a modern icon of ${prompt}, in ${stylePart}, centered, clean${linesColorsPart}. Could be any shape, circle, square, box, etc. Please scale the full content to fit inside the image size of 1024x1024 px.`;
-  return finalPrompt;
+  const userFinalPrompt = `a modern icon of ${prompt}, in ${stylePart}, centered, clean${linesColorsPart}.`;
+  const finalPrompt = `${userFinalPrompt} Could be any shape, circle, square, box, etc. Please scale the full content to fit inside the image size of 1024x1024 px.`;
+  return { userFinalPrompt, finalPrompt };
 }
 
 export const iconsRouter = createTRPCRouter({
@@ -66,7 +70,7 @@ export const iconsRouter = createTRPCRouter({
     .input(
       z.object({
         prompt: z.string().min(1),
-        color: z.string().optional(),
+        colors: z.array(z.string()).max(4).optional(),
         style: z.string().optional(),
         lines: z.string().optional(),
         numberOfIcons: z.number().min(1).max(10),
@@ -90,9 +94,9 @@ export const iconsRouter = createTRPCRouter({
         });
       }
 
-      const finalPrompt = generateFinalPrompt(
+      const { userFinalPrompt, finalPrompt } = generateFinalPrompt(
         input.prompt,
-        input?.color,
+        input?.colors,
         input?.style,
         input?.lines,
       );
@@ -126,7 +130,7 @@ export const iconsRouter = createTRPCRouter({
         images_64strings.map(async (image, idx) => {
           const dbIcon = await ctx.db.icon.create({
             data: {
-              prompt: finalPrompt,
+              prompt: userFinalPrompt,
               userId: ctx.session.user.id,
               keepPrivate: idx === 0 ? false : true,
             },
@@ -229,9 +233,12 @@ export const iconsRouter = createTRPCRouter({
       keepPrivate: boolean;
       createdAt: Date;
     }[] = await ctx.db.icon.findMany({
-      take: 20,
+      take: 15,
       orderBy: {
         createdAt: "desc",
+      },
+      where: {
+        keepPrivate: false,
       },
     });
 
