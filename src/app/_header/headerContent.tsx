@@ -1,8 +1,8 @@
 "use client";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
-import { Button } from "./_components/Button";
-import { PrimaryLink } from "./_components/PrimaryLink";
+import { Button } from "../_components/Button";
+import { PrimaryLink } from "../_components/PrimaryLink";
 import { RefreshCwIcon } from "lucide-react";
 import React from "react";
 import clsx from "clsx";
@@ -80,7 +80,7 @@ export default function HeaderContent({
   }, [query]);
 
   return (
-    <div className="flex max-w-[1440px] items-center justify-between 2xl:mx-auto">
+    <div className="hidden max-w-[1440px] items-center justify-between sm:flex 2xl:mx-auto">
       <aside className="flex items-center gap-6">
         <PrimaryLink
           href="/"

@@ -23,9 +23,11 @@ export default async function Collection() {
   return (
     <main
       className="container relative z-20 m-auto mb-24
-    flex min-h-96 max-w-screen-md flex-col gap-8 px-4 py-8 md:px-8 md:py-10"
+    flex min-h-96 max-w-screen-md flex-col gap-8 px-4 py-10 md:px-8"
     >
-      <h2 className="text-4xl font-bold">Community icons</h2>
+      <h2 className="text-center text-4xl font-bold md:text-left">
+        Community icons
+      </h2>
       <p className="-mt-4 text-lg"></p>
       {userIconsCount && <CommunityContent userIconsCount={userIconsCount} />}
     </main>

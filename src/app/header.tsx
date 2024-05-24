@@ -1,4 +1,5 @@
-import HeaderContent from "./headerContent";
+import HeaderMobile from "./_header/headerMobile";
+import HeaderContent from "./_header/headerContent";
 import { getServerAuthSession } from "~/server/auth";
 
 export default async function Header() {
@@ -10,6 +11,7 @@ export default async function Header() {
     transition-colors duration-500 dark:border-b-[#2B3544] dark:border-b-slate-50/[0.06] dark:bg-slate-900/75"
     >
       <HeaderContent sessionUser={session?.user} />
+      <HeaderMobile sessionUser={session?.user} />
     </header>
   );
 }

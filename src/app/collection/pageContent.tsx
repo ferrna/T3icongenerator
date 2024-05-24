@@ -54,7 +54,7 @@ function IconInfo({
 
   return (
     <div
-      className="relative mt-16 flex w-full items-stretch gap-4 p-2"
+      className="relative mt-16 flex w-full flex-col items-center gap-10 p-2 md:flex-row md:items-stretch md:gap-4"
       id="icon-info-container"
     >
       <div className="absolute right-0 top-0 flex -translate-y-1/2 items-center justify-center">
@@ -95,10 +95,11 @@ function IconInfo({
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex items-center justify-center gap-4">
+        <p className="text-lg md:hidden">Download icon</p>
         <Button
           title="Download Icon"
-          className="relative w-auto after:absolute after:left-1/2 after:-translate-x-1/2 after:pt-4 after:text-center after:leading-tight after:text-gray-700 after:content-['Download_png']"
+          className="relative w-auto after:absolute after:left-1/2 after:-translate-x-1/2 after:pt-4 after:text-center after:leading-tight after:text-gray-800 md:after:content-['Download_icon'] dark:after:text-gray-300"
         >
           <DownloadIcon width={40} height={40} onClick={handleDownload} />
         </Button>

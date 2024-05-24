@@ -9,13 +9,13 @@ export function PricingContent() {
   return (
     <section className="flex w-full from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] px-4 pb-16 pt-10 md:bg-white md:pb-32 md:pt-12 lg:px-28 dark:md:bg-gradient-to-r">
       <article className="container mx-auto flex flex-col items-center justify-center gap-6">
-        <h2 className="text-center text-5xl font-bold text-slate-800">
+        <h2 className="text-center text-5xl font-bold text-slate-800 dark:text-gray-100 dark:md:text-slate-800">
           Pricing
         </h2>
-        <p className="text-lg text-slate-800">
+        <p className="text-center text-lg text-slate-800 md:text-left dark:text-gray-100 dark:md:text-slate-800">
           Choose the plan that best fits your needs.
         </p>
-        <div className="flex gap-8 p-4 sm:gap-8 md:gap-12">
+        <div className="flex flex-col gap-8 p-4 sm:flex-row md:gap-12">
           <div className="flex flex-col items-center gap-4 rounded-lg bg-slate-300 p-6 pb-7 pt-5 text-center shadow-md dark:bg-slate-800">
             <h3 className="text-2xl font-medium">Normal</h3>
             <p className="py-1 text-5xl font-extrabold">$5</p>

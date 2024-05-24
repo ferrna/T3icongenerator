@@ -12,10 +12,10 @@ const HeroContent = () => {
   return (
     <section className="container mx-auto grid min-h-[calc(100vh-73px)] grid-cols-1 gap-6 px-4 py-8 sm:grid-cols-2 sm:gap-8 md:gap-12 md:px-0 md:py-16 lg:px-28 lg:py-20 xl:py-28">
       <aside className="flex flex-col gap-2">
-        <h1 className="text-5xl font-bold tracking-tight lg:mt-4">
+        <h1 className="text-center text-5xl font-bold tracking-tight md:text-left lg:mt-4">
           Generate Icons with a click of a button
         </h1>
-        <p className="text-2xl">
+        <p className="text-center text-2xl md:text-left">
           Craft unique and tailored icons with the power of IA.
         </p>
         <Button className="mt-8 self-center text-lg sm:self-start md:text-base">
@@ -42,29 +42,28 @@ const HeroContent = () => {
   );
 };
 
-const ShowSectionContent = () => {
+const ShowSectionContent = ({ childNumber = 1 }) => {
   return (
     <section
       className="flex w-full from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] px-4 pb-16 pt-10
-    md:bg-white md:pb-32 md:pt-12 lg:px-28 dark:md:bg-gradient-to-r"
+    md:bg-white md:pb-36 md:pt-16 lg:px-28 dark:md:bg-gradient-to-r"
     >
-      <article className="container mx-auto grid grid-cols-5">
-        <picture className="align-center col-span-5 flex justify-center pr-6 md:col-span-3">
+      <article className="container mx-auto grid grid-cols-4 gap-6">
+        <picture
+          className={`align-center order-2 col-span-4 flex justify-center md:col-span-2 ${childNumber % 2 === 1 ? "md:order-1" : "md:order-2"}`}
+        >
           <img
             src="/showbox.png"
             alt="icons-show image"
             className="w-full rounded-md"
           />
         </picture>
-        <aside className="col-span-5 flex flex-grow flex-col gap-10 pt-9 md:col-span-2">
-          <h2 className="relative mx-auto text-center text-5xl font-bold text-slate-800 before:absolute before:right-full before:pr-2 before:content-['♦']">
-            Craft variants
+        <aside className="col-span-4 flex flex-grow flex-col gap-10 pt-9 md:col-span-2">
+          <h2 className="mx-auto text-center text-5xl font-bold text-slate-900 dark:text-gray-100 dark:md:text-slate-900">
+            Craft the style you prefer
           </h2>
-          <p className="text-center text-lg text-slate-800">
-            Choose the style you prefer and{" "}
-            <u className="cursor-pointer hover:text-slate-700">
-              craft some variants!
-            </u>
+          <p className="text-center text-lg text-slate-800 dark:text-gray-100 dark:md:text-slate-800">
+            Choose the style you prefer and start making variants!
           </p>
         </aside>
       </article>
@@ -93,29 +92,25 @@ const ActionsSectionContent = () => {
   ];
   return (
     <section
-      className="flex w-full from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] px-4 
-      py-10 md:bg-white md:pt-12 lg:px-28 dark:md:bg-gradient-to-r"
+      className="flex h-screen w-full items-center from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] 
+      px-4 py-8 md:bg-white md:pt-12 lg:px-28 dark:md:bg-gradient-to-r"
     >
-      <article className="z-22 container mx-auto flex flex-col items-center gap-2 px-8">
-        <div className="flex w-full items-center justify-center gap-4 p-8">
-          {actions.map((action) => (
-            <picture className="pl-2" key={action.title}>
-              <Button
-                title="download icon"
-                className="disabled pointer-events-none h-max w-max p-1 text-white disabled:from-blue-500 disabled:to-blue-600 disabled:hover:opacity-100"
-              >
-                {action.image}
-              </Button>
-            </picture>
-          ))}
-        </div>
+      <article className="z-22 container mx-auto flex flex-col items-center gap-10 bg-slate-300 p-8 md:py-12 xl:pt-[3.5rem] xl:pb-16 shadow-md md:rounded-lg dark:bg-slate-800">
         {actions.map((action) => (
-          <h4
-            key={action.title + "h4"}
-            className="text-bold relative text-center text-2xl text-black before:absolute before:right-full before:pr-2 before:content-['♦']"
+          <div
+            key={action.title}
+            className="flex w-full flex-col items-center gap-4"
           >
-            {action.title}
-          </h4>
+            <Button
+              title="download icon"
+              className="disabled shadow-sm pointer-events-none h-max w-max p-1 text-white disabled:from-blue-500 disabled:to-blue-600 disabled:hover:opacity-100"
+            >
+              {action.image}
+            </Button>
+            <p className="text-bold relative w-full max-w-2xl text-center text-2xl leading-[1em] text-black dark:text-gray-100">
+              {action.title}
+            </p>
+          </div>
         ))}
       </article>
     </section>
@@ -125,7 +120,7 @@ const ActionsSectionContent = () => {
 const BottomWavesContent = () => {
   return (
     <section
-      className="relative flex w-full flex-col bg-white from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] pb-96 dark:md:bg-gradient-to-r
+      className="relative flex w-full flex-col from-[#c8c9ce] via-[#c8cace] via-60% to-[#c8cace] pb-96 md:bg-white dark:md:bg-gradient-to-r
     "
     >
       <div className="absolute bottom-0">

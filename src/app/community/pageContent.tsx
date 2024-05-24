@@ -24,7 +24,7 @@ function IconInfo({ data }: { data: IconWithImage64 | null }) {
 
   return (
     <div
-      className="mt-16 flex w-full items-stretch gap-4"
+      className="mt-16 flex w-full flex-col items-center gap-10 md:flex-row md:items-stretch md:gap-4"
       id="icon-info-container-co"
     >
       <img
@@ -45,10 +45,11 @@ function IconInfo({ data }: { data: IconWithImage64 | null }) {
         </div>
         <p className="-mt-1 px-6 text-lg italic">{data.prompt}</p>
       </div>
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex items-center justify-center gap-4">
+        <p className="text-lg md:hidden">Download icon</p>
         <Button
           title="Download Icon"
-          className="relative w-auto after:absolute after:left-1/2 after:-translate-x-1/2 after:pt-4 after:text-center after:leading-tight after:text-gray-700 after:content-['Download_png']"
+          className="relative w-auto after:absolute after:left-1/2 after:-translate-x-1/2 after:pt-4 after:text-center after:leading-tight after:text-gray-800 md:after:content-['Download_icon'] dark:after:text-gray-300"
         >
           <DownloadIcon width={40} height={40} onClick={handleDownload} />
         </Button>

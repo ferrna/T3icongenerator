@@ -5,7 +5,7 @@ export default async function Footer() {
   return (
     <footer
       className="w-full snap-y snap-mandatory border-t 
-      border-t-cyan-900 bg-gray-100 *:snap-end dark:border-none dark:border-t-[#2B3544] dark:bg-slate-50/[0.06]"
+      border-t-cyan-900 bg-gray-100 *:snap-end dark:border-none dark:border-t-[#2B3544] dark:bg-slate-50/[0.06] dark:md:border-none"
     >
       <div className="flex w-full justify-center p-8 pb-6 pt-4 text-sm">
         <div className="container flex w-full justify-between">

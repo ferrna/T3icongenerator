@@ -248,12 +248,10 @@ function renderImages(
   );
 }
 
-/* TODO: 
-  - responsivity of landingpage, my-icons, header
+/* TODO:
   - stripe production keys
-  - choose dalle-2 dalle-3, and manage credits used by each
-  - cache on server communityIcons page icons
-  - use a new s3 bucket and local postgres database in development
+  - choose dalle-2 dalle-3
+  - new s3 bucket in development
 */
 
 /* <div
