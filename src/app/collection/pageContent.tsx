@@ -47,8 +47,8 @@ function IconInfo({
     document.body.removeChild(element);
   };
 
-  const handleKeepPrivate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    helperToggleKeepPrivate(data.id!);
+  const handleKeepPrivate = () => {
+    helperToggleKeepPrivate(data.id);
     setIsPrivate(!isPrivate);
   };
 
