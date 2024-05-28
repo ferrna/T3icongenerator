@@ -35,6 +35,12 @@ const config = {
             port: '',
             pathname: '/**',
           },
+          {
+            protocol: 'https',
+            hostname: 'www.sandbox.paypal.com',
+            port: '',
+            pathname: '/**',
+          },
         ],
   },
   /* async headers() {

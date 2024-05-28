@@ -249,7 +249,6 @@ function renderImages(
 }
 
 /* TODO:
-  - stripe production keys
   - choose dalle-2 dalle-3
   - new s3 bucket in development
 */

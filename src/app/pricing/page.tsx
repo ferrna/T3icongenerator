@@ -1,9 +1,10 @@
 "use client";
-import { Button } from "../_components/Button";
 import { SubscriptionType, useBuyCredits } from "../(hooks)/useBuyCredits";
+import { Button } from "../_components/Button";
 
 export default function Pricing() {
   const { buyCredits } = useBuyCredits();
+
   return (
     <section className="flex min-h-screen w-full px-4 pb-28 pt-10 md:pb-32 md:pt-12 lg:px-28">
       <article className="container mx-auto flex flex-col items-center justify-center gap-6">
@@ -17,7 +18,6 @@ export default function Pricing() {
             <p className="py-1 text-5xl font-extrabold">$5</p>
             <span className="pt-2 text-lg">100 Credits</span>
             <span className="text-lg">0.05$ peer icon</span>
-
             <Button
               className="mt-2 self-center text-lg sm:self-start md:text-base"
               onClick={() =>
@@ -32,7 +32,6 @@ export default function Pricing() {
             <p className="py-1 text-5xl font-extrabold">$12</p>
             <span className="pt-2 text-lg">250 Credits</span>
             <span className="text-lg">0.04~$ peer icon</span>
-
             <Button
               className="mt-2 self-center text-lg sm:self-start md:text-base"
               onClick={() =>

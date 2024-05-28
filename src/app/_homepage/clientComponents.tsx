@@ -20,7 +20,7 @@ export function PricingContent() {
             <h3 className="text-2xl font-medium">Normal</h3>
             <p className="py-1 text-5xl font-extrabold">$5</p>
             <span className="pt-2 text-lg">100 Credits</span>
-            <span className="text-lg">0.08$ peer icon</span>
+            <span className="text-lg">0.05$ peer icon</span>
 
             <Button
               className="mt-2 self-center text-lg sm:self-start md:text-base"

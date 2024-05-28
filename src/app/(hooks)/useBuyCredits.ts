@@ -1,20 +1,13 @@
-import { loadStripe } from "@stripe/stripe-js";
 import { signIn, useSession } from "next-auth/react";
-import { env } from "~/env";
-import { api } from "~/trpc/react";
-
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_API_KEY);
+import { useRouter } from "next/navigation";
 
 export enum SubscriptionType {
   Normal = "normal",
   Pro = "pro",
 }
 export function useBuyCredits() {
-  const checkout = api.checkout.generatePaymentPage.useMutation();
   const session = useSession();
-
+  const router = useRouter();
   return {
     buyCredits: async ({
       subscriptionType,
@@ -22,14 +15,13 @@ export function useBuyCredits() {
       subscriptionType: SubscriptionType;
     }): Promise<void> => {
       if (!session.data) {
-        await signIn("google", { callbackUrl: "/pricing" });
+        await signIn("google", {
+          callbackUrl: `/checkout?paymentType=${subscriptionType}`,
+        });
         return;
+      } else {
+        router.push(`/checkout?paymentType=${subscriptionType}`);
       }
-      const response = await checkout.mutateAsync({ subscriptionType });
-      const stripe = await stripePromise;
-      await stripe?.redirectToCheckout({
-        sessionId: response.id,
-      });
     },
   };
 }

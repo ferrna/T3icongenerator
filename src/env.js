@@ -35,6 +35,7 @@ export const env = createEnv({
     PRICE_ID_Pro: z.string(),
     HOST_URL: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+    PAYPAL_CLIENT_SECRET: z.string()
   },
 
   /**
@@ -45,6 +46,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_STRIPE_API_KEY: z.string(),
+    NEXT_PUBLIC_PAYPAL_CLIENT_ID: z.string(),
   },
 
   /**
@@ -69,7 +71,9 @@ export const env = createEnv({
     PRICE_ID: process.env.PRICE_ID,
     PRICE_ID_Pro: process.env.PRICE_ID_Pro,
     HOST_URL: process.env.HOST_URL,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+    PAYPAL_CLIENT_SECRET: process.env.PAYPAL_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

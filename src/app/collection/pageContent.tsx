@@ -123,7 +123,16 @@ export default function CollectionContent() {
     isError,
     data: userIcons,
     error,
-  } = api.icons.getIcons.useQuery({ iconsSetN });
+  } = api.icons.getIcons.useQuery(
+    { iconsSetN },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: 1000 * 60 * 60 * 24, //24h
+    },
+  );
 
   const { mutate, isPending: toggleKeepPrivateIsPending } =
     api.icons.postToggleKeepPrivate.useMutation({
@@ -153,6 +162,11 @@ export default function CollectionContent() {
             strokeWidth={1.25}
             className="mx-auto mt-6 animate-spin"
           />
+          <br />
+          <span className="flex -translate-y-2 items-center gap-1 text-sm text-gray-700 dark:text-[#d6d6d6]">
+            {" "}
+            Loading
+          </span>
         </li>
       );
     }
@@ -161,7 +175,7 @@ export default function CollectionContent() {
     }
     return null;
   };
-  const renderIcons = (icons: typeof userIcons) => {
+  const renderIcons = (icons: typeof userIcons | null) => {
     if (icons) {
       if (icons.length > 0) {
         return icons.map((icon: IconWithImage64) => (
@@ -216,7 +230,7 @@ export default function CollectionContent() {
             </Button>
           </li>
         )}
-        {renderIcons(userIconsI ?? [])}
+        {renderIcons(userIconsI)}
         {renderQueryState()}
       </ul>
       {userIconsI && (

@@ -13,7 +13,7 @@ export default async function Collection() {
   return (
     <main
       className="container relative z-20 m-auto mb-24
-    flex min-h-96 max-w-screen-md flex-col gap-8 px-4 py-10 md:px-8"
+    flex min-h-screen max-w-screen-md flex-col gap-8 px-4 py-10 md:px-8"
     >
       <h2
         className="text-center text-4xl font-bold md:text-left"
@@ -21,7 +21,7 @@ export default async function Collection() {
       >
         Collection
       </h2>
-      <p className="-mt-4 text-lg">Your collection of beautiful icons</p>
+      <p className="-mt-4 text-lg">Your collection of beautiful AI icons</p>
       <CollectionContent />
     </main>
   );

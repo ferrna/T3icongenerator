@@ -104,15 +104,28 @@ export default function CommunityContent({
     isError,
     data: userIcons,
     error,
-  } = api.icons.getCommunityIcons.useQuery();
+  } = api.icons.getCommunityIcons.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    staleTime: 1000 * 60 * 60 * 24, //24h
+  });
   const renderQueryState = () => {
     if (isPending) {
       return (
-        <LoaderCircle
-          color="#17977d"
-          strokeWidth={1.25}
-          className="mx-auto mt-6 animate-spin"
-        />
+        <li className="col-span-4 self-center justify-self-center">
+          <LoaderCircle
+            color="#17977d"
+            strokeWidth={1.25}
+            className="mx-auto mt-6 animate-spin"
+          />
+          <br />
+          <span className="flex -translate-y-2 items-center gap-1 text-sm text-gray-700 dark:text-[#d6d6d6]">
+            {" "}
+            Loading
+          </span>
+        </li>
       );
     }
     if (isError) {
