@@ -65,6 +65,9 @@ const createOrder = async (cart: {
         },
       },
     ],
+    application_context: {
+      shipping_preference: "NO_SHIPPING",
+    },
   };
   const response = await fetch(url, {
     headers: {

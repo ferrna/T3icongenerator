@@ -21,7 +21,7 @@ export default function Checkout() {
             <span className="text-lg">{cardInfo.numberOfCredits} credits</span>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-4 rounded-md bg-slate-300 p-6 text-center shadow dark:bg-slate-800">
+        <div className="flex min-h-[170px] min-w-full flex-col items-center gap-4 rounded-md bg-slate-300 p-6 text-center shadow dark:bg-slate-800">
           <PayPalButtonsProvider paymentType={paymentType} />
         </div>
       </article>

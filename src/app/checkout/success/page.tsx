@@ -32,7 +32,7 @@ export default function CheckoutSuccess() {
             </p>
           </div>
           <p className="translate-y-1">
-            New balance: {isPending ? "" : "  " + creditsBalance?.credits}{" "}
+            Your new balance: {isPending ? "" : "  " + creditsBalance?.credits}{" "}
             credits
           </p>
           <Link href="/generate">

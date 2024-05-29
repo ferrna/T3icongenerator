@@ -24,7 +24,7 @@ export default function PayPalButtonsProvider({
   const [message, setMessage] = useState("");
   const router = useRouter();
   return (
-    <div>
+    <div className="sm:w-[400px]">
       <PayPalScriptProvider options={initialOptions}>
         <PayPalButtons
           style={{
