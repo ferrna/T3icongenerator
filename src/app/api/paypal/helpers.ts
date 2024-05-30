@@ -9,7 +9,7 @@ export async function handleResponse(response: Response): Promise<{
   httpStatusCode: number;
 }> {
   try {
-    const jsonResponse = await response.json();
+    const jsonResponse = await response.json() as unknown as { status: string };
     return {
       jsonResponse,
       httpStatusCode: response.status,
@@ -46,7 +46,7 @@ export const generateAccessToken = async (): Promise<string> => {
         Authorization: `Basic ${auth}`,
       },
     });
-    const data: OAuthData = await response.json();
+    const data = await response.json() as unknown as OAuthData;
     return data.access_token;
   } catch (error) {
     console.error("Failed to generate Access Token:", error);
