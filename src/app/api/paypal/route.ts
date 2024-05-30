@@ -87,7 +87,7 @@ const handler = async (request: Request, response: NextApiResponse) => {
       throw new Error("User has not been logged.");
     }
 
-    const body = await request.json();
+    const body: { paymentType: Subscription } = await request.json();
     const { paymentType } = body;
     const cartData = createCartData(paymentType);
     try {

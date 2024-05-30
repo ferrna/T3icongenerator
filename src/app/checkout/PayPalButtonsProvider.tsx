@@ -5,8 +5,28 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useRouter } from "next/navigation";
 
 // Renders errors or successfull transactions on the screen.
-function Message({ content }: any) {
+function Message({ content }: { content: string }) {
   return <p>{content}</p>;
+}
+
+interface CreateOrderResponse {
+  id: string;
+}
+interface CreateOrderResponseError {
+  details: { issue: string; description: string }[];
+  debug_id: string;
+}
+interface CaptureOrderResponse {
+  id: string;
+  purchase_units: [{ payments: { captures: [{ id: string }] } }];
+  payer: {
+    name: { given_name: string; surname: string };
+    email_address: string;
+  };
+}
+interface CaptureOrderResponseError {
+  details: { issue: string; description: string }[];
+  debug_id: string;
 }
 
 export default function PayPalButtonsProvider({
@@ -47,9 +67,10 @@ export default function PayPalButtonsProvider({
                 body: JSON.stringify({ paymentType }),
               });
 
-              const orderData = await response.json();
+              const orderData: CreateOrderResponse | CreateOrderResponseError =
+                await response.json();
 
-              if (orderData.id) {
+              if ("id" in orderData) {
                 return orderData.id;
               } else {
                 const errorDetail = orderData?.details?.[0];
@@ -58,9 +79,12 @@ export default function PayPalButtonsProvider({
                   : JSON.stringify(orderData);
                 throw new Error(errorMessage);
               }
-            } catch (error) {
-              console.error(error);
-              setMessage(`Could not initiate PayPal Checkout...${error}`);
+            } catch (err) {
+              console.error(err);
+              let message = "Error: Could not initiate PayPal Checkout.";
+              if (err instanceof Error) message = err.message;
+              setMessage(`Could not initiate PayPal Checkout...${message}`);
+              return message;
             }
           }}
           onApprove={async (data, actions) => {
@@ -76,22 +100,26 @@ export default function PayPalButtonsProvider({
                 },
               );
 
-              const orderData = await response.json();
+              const orderData:
+                | CaptureOrderResponse
+                | CaptureOrderResponseError = await response.json();
               // Three cases to handle:
               //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
               //   (2) Other non-recoverable errors -> Show a failure message
               //   (3) Successful transaction -> Show confirmation or thank you message
 
-              const errorDetail = orderData?.details?.[0];
-              if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                return actions.restart();
-              } else if (errorDetail) {
-                // (2) Other non-recoverable errors -> Show a failure message
-                throw new Error(
-                  `${errorDetail.description} (${orderData.debug_id})`,
-                );
+              if ("details" in orderData) {
+                const errorDetail = orderData?.details?.[0];
+                if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+                  // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                  // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
+                  return actions.restart();
+                } else if (errorDetail) {
+                  // (2) Other non-recoverable errors -> Show a failure message
+                  throw new Error(
+                    `${errorDetail.description} (${orderData.debug_id})`,
+                  );
+                }
               } else {
                 // (3) Successful transaction -> Show confirmation or thank you message
 
@@ -113,11 +141,14 @@ export default function PayPalButtonsProvider({
                   `/checkout/success?transaction=${transaction.id}&fullName=${full_name}&emailAddress=${email_address}`,
                 );
               }
-            } catch (error) {
-              console.error(error);
+            } catch (err) {
+              console.error(err);
+              let message = "Error: Could not process PayPal Checkout.";
+              if (err instanceof Error) message = err.message;
               setMessage(
-                `Sorry, your transaction could not be processed...${error}`,
+                `Sorry, your transaction could not be processed...${message}`,
               );
+              return;
             }
           }}
         />

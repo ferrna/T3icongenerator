@@ -32,12 +32,12 @@ async function submitRefund(captureId: string) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error: Error = await response.json();
     console.error("Error refunding payment:", error);
-    throw new Error(error);
+    throw new Error(error.message);
   }
 
-  const refundData = await response.json();
+  const refundData: Response = await response.json();
   console.log("Refund successful:", refundData);
   throw new Error("Failed to update user credits. A refund has been made.");
 }
@@ -46,7 +46,7 @@ async function updateUser(paymentType: PaymentType, session: Session | null) {
   const userBefore: User | null = await db.user.findUnique({
     where: { id: session?.user.id },
   });
-  const { credits: beforeCredits } = userBefore || { credits: null };
+  const { credits: beforeCredits } = userBefore ?? { credits: null };
 
   // update user credits
   const update = await db.user.update({
@@ -61,7 +61,7 @@ async function updateUser(paymentType: PaymentType, session: Session | null) {
   const userAfter: User | null = await db.user.findUnique({
     where: { id: session?.user.id },
   });
-  const { credits: afterCredits } = userAfter || { credits: null };
+  const { credits: afterCredits } = userAfter ?? { credits: null };
   if (!update && beforeCredits === afterCredits) {
     return { error: "Failed to update user" };
   } else {
@@ -85,7 +85,7 @@ const captureOrder = async (orderID: string) => {
 
 const handler = async (request: Request, response: NextApiResponse) => {
   if (request.method === "POST") {
-    const body = await request.json();
+    const body: { paymentType: PaymentType } = await request.json();
     const { paymentType } = body;
 
     const url = new URL(request.url);
