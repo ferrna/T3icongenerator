@@ -32,11 +32,14 @@ async function submitRefund(captureId: string) {
   });
 
   if (!response.ok) {
-    const error: Error = await response.json();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const error = await response.json();
     console.error("Error refunding payment:", error);
-    throw new Error(error.message);
+    let message = "Error refunding payment.";
+    if (error instanceof Error) message = error.message;
+    throw new Error(message);
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const refundData: Response = await response.json();
   console.log("Refund successful:", refundData);
   throw new Error("Failed to update user credits. A refund has been made.");
@@ -85,7 +88,8 @@ const captureOrder = async (orderID: string) => {
 
 const handler = async (request: Request, response: NextApiResponse) => {
   if (request.method === "POST") {
-    const body: { paymentType: PaymentType } = await request.json();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const body = await request.json() as { paymentType: PaymentType };
     const { paymentType } = body;
 
     const url = new URL(request.url);

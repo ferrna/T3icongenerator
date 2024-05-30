@@ -86,7 +86,7 @@ const handler = async (request: Request, response: NextApiResponse) => {
     if (!session?.user) {
       throw new Error("User has not been logged.");
     }
-
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const body: { paymentType: Subscription } = await request.json();
     const { paymentType } = body;
     const cartData = createCartData(paymentType);

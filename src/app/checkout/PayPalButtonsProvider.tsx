@@ -67,8 +67,8 @@ export default function PayPalButtonsProvider({
                 body: JSON.stringify({ paymentType }),
               });
 
-              const orderData: CreateOrderResponse | CreateOrderResponseError =
-                await response.json();
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              const orderData: CreateOrderResponse | CreateOrderResponseError =await response.json();
 
               if ("id" in orderData) {
                 return orderData.id;
@@ -100,9 +100,8 @@ export default function PayPalButtonsProvider({
                 },
               );
 
-              const orderData:
-                | CaptureOrderResponse
-                | CaptureOrderResponseError = await response.json();
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              const orderData:CaptureOrderResponse| CaptureOrderResponseError = await response.json();
               // Three cases to handle:
               //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
               //   (2) Other non-recoverable errors -> Show a failure message
