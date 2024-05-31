@@ -2,7 +2,7 @@ import { env } from "~/env";
 
 const NEXT_PUBLIC_PAYPAL_CLIENT_ID = env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = env.PAYPAL_CLIENT_SECRET;
-const base = "https://api-m.sandbox.paypal.com";
+const base = env.PAYPAL_API_BASE_URL;
 
 export async function handleResponse(response: Response): Promise<{
   jsonResponse: { status: string };

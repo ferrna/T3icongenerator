@@ -35,7 +35,8 @@ export const env = createEnv({
     PRICE_ID_Pro: z.string(),
     HOST_URL: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
-    PAYPAL_CLIENT_SECRET: z.string()
+    PAYPAL_CLIENT_SECRET: z.string(),
+    PAYPAL_API_BASE_URL: z.string()
   },
 
   /**
@@ -74,6 +75,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
     PAYPAL_CLIENT_SECRET: process.env.PAYPAL_CLIENT_SECRET,
+    PAYPAL_API_BASE_URL: process.env.PAYPAL_API_BASE_URL
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

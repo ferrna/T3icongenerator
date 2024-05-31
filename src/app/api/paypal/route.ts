@@ -1,8 +1,9 @@
 import { NextApiResponse } from "next";
 import { generateAccessToken, handleResponse } from "./helpers";
 import { getServerAuthSession } from "~/server/auth";
+import { env } from "~/env";
 
-const base = "https://api-m.sandbox.paypal.com";
+const base = env.PAYPAL_API_BASE_URL;
 
 type Subscription = "normal" | "pro";
 

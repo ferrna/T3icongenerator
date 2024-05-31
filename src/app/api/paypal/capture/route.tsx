@@ -4,7 +4,8 @@ import { db } from "~/server/db";
 import { getServerAuthSession } from "~/server/auth";
 import { User } from "@prisma/client";
 import { Session } from "next-auth";
-const base = "https://api-m.sandbox.paypal.com";
+import { env } from "~/env";
+const base = env.PAYPAL_API_BASE_URL;
 
 type PaymentType = "normal" | "pro";
 
