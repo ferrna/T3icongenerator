@@ -54,6 +54,9 @@ export default function GenerateForm() {
       utils.user.getCredits
         .invalidate(undefined, { refetchType: "all" })
         .catch((err) => console.log(err));
+      utils.icons.getIcons
+        .invalidate(undefined, { refetchType: "all" })
+        .catch((err) => console.log(err));
     },
   });
 
@@ -249,8 +252,9 @@ function renderImages(
 }
 
 /* TODO:
-  - choose dalle-2 dalle-3
+  - buy domain and get google seo sitemap crawl
   - new s3 bucket in development
+  - choose dalle-2 dalle-3
 */
 
 /* <div

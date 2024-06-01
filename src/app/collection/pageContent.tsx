@@ -182,15 +182,45 @@ export default function CollectionContent() {
           <li
             key={icon.id}
             onClick={() => setShowInfo({ id: icon.id })}
-            className="cursor-pointer"
+            className="dark:shadow-['inset -10px -10px 12px 4px #101625, inset 10px -10px 12px 4px #101625'] cursor-pointer dark:relative z-20 dark:rounded-3xl dark:bg-slate-900 dark:p-6"
           >
-            <a href="#icon-info-container">
+            <a href="#icon-info-container" className="dark:hidden">
               <img
                 src={`data:image/png;base64,${icon?.image64 ?? ""}`}
                 alt={icon.prompt ?? ""}
                 className="w-full rounded-lg shadow-sm"
               />
             </a>
+            <a href="#icon-info-container" className="hidden dark:block">
+
+          <div
+            className="z-22 absolute inset-x-0 inset-y-0 rounded-3xl"
+            style={{
+              background:
+                "linear-gradient(-46deg, transparent 78%, rgba(254,254,254,0.15) 97%)",
+            }}
+          ></div>
+          <div
+            className="z-22 absolute inset-x-0 inset-y-0 rounded-3xl"
+            style={{
+              background:
+                "linear-gradient(46deg, transparent 78%, rgba(254,254,254,0.15) 97%)",
+            }}
+          ></div>
+          <div className="relative opacity-100 transition-all hover:brightness-105">
+            <img
+              src={`data:image/png;base64,${icon?.image64 ?? ""}`}
+              alt={icon.prompt ?? ""}
+              className="w-full rounded-xl"
+              style={{
+                boxShadow:
+                  "0px 24px 24px rgba(0,0,0,0.40), 0 0 2px rgba(0,0,0,0.05)",
+              }}
+            />
+            <div className="z-21 absolute inset-x-0 inset-y-0 -translate-y-[25px] scale-x-95 border-t border-t-[#2a303f]"></div>
+            <div className="z-21 absolute inset-x-0 inset-y-0 -translate-y-6 scale-x-100 border-t border-t-[#414958]"></div>
+          </div>
+          </a>
           </li>
         ));
       } else if (icons.length === 0) {
